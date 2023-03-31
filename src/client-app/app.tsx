@@ -3,7 +3,10 @@ import { QueryClient } from "@tanstack/react-query";
 import { PeopleList } from "./list";
 import { PersonDetail } from "./detail";
 import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
-import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
+import {
+	PersistQueryClientProvider,
+	persistQueryClientRestore,
+} from "@tanstack/react-query-persist-client";
 
 const persister = createSyncStoragePersister({
 	storage: window.localStorage,
@@ -17,6 +20,12 @@ const queryClient = new QueryClient({
 			retry: 0,
 		},
 	},
+});
+
+persistQueryClientRestore({
+	queryClient,
+	persister,
+	maxAge: 1000 * 60 * 60 * 24,
 });
 
 export const App = () => {

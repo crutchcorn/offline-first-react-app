@@ -1,6 +1,6 @@
-import type { NextApiRequest, NextApiResponse } from "next";
 import { v4 as uuidV4 } from "uuid";
 import * as fs from "fs";
+import type { APIRoute } from "astro";
 
 const listPath = process.cwd() + "/list.json";
 
@@ -20,32 +20,44 @@ interface Person {
   age: number;
 }
 
-export default function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<Person[]>
-) {
-  if (req.method === "POST") {
-    const { name, age } = req.body;
-    const person: Person = { id: uuidV4(), name, age };
-    const list = JSON.parse(fs.readFileSync(listPath, "utf8"));
-    list.push(person);
-    fs.writeFileSync(listPath, JSON.stringify(list));
-    res.status(200).json(list);
-    return;
-  }
-  if (req.method === "GET") {
-    const list = JSON.parse(fs.readFileSync(listPath, "utf8"));
-    res.status(200).json(list);
-    return;
-  }
-  if (req.method === "PUT") {
-    const { id, name, age } = req.body;
-    const list = JSON.parse(fs.readFileSync(listPath, "utf8"));
-    const person = list.find((person: Person) => person.id === id);
-    person.name = name;
-    person.age = age;
-    fs.writeFileSync(listPath, JSON.stringify(list));
-    res.status(200).json(list);
-    return;
-  }
-}
+export const get: APIRoute = () => {
+  const list = JSON.parse(fs.readFileSync(listPath, "utf8"));
+  return {
+    body: JSON.stringify(list),
+  };
+};
+
+export const post: APIRoute = async ({ request }) => {
+  const body = await request.json();
+  const { name, age } = body;
+  const person: Person = { id: uuidV4(), name, age };
+  const list = JSON.parse(fs.readFileSync(listPath, "utf8"));
+  list.push(person);
+  fs.writeFileSync(listPath, JSON.stringify(list));
+
+  return {
+    body: JSON.stringify(list),
+  };
+};
+
+export const put: APIRoute = async ({ request }) => {
+  const body = await request.json();
+  const { id, name, age } = body;
+  const list = JSON.parse(fs.readFileSync(listPath, "utf8"));
+  const person = list.find((person: Person) => person.id === id);
+  person.name = name;
+  person.age = age;
+  fs.writeFileSync(listPath, JSON.stringify(list));
+
+  return {
+    body: JSON.stringify(list),
+  };
+};
+
+export const del: APIRoute = () => {
+  return {
+    body: JSON.stringify({
+      message: "This was a DELETE!",
+    }),
+  };
+};

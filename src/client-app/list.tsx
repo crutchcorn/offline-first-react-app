@@ -1,7 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { getPeopleList } from "@/services/people";
+import { getPeopleList } from "../services/people";
+import { Link } from "react-router-dom";
 
-export const HomeClient = () => {
+export const PeopleList = () => {
   const { data: people, isLoading } = useQuery(["people"], {
     queryFn: async () => {
       return await getPeopleList();
@@ -14,7 +15,9 @@ export const HomeClient = () => {
     <div>
       <ul>
         {people!.map((person) => (
-          <li key={person.id}>{person.name}</li>
+          <li key={person.id}>
+            <Link to={`/detail/${person.id}`}>{person.name}</Link>
+          </li>
         ))}
       </ul>
     </div>

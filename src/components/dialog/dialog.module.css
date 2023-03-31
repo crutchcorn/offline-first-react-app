@@ -1,0 +1,27 @@
+.dialogContainer {
+	position: fixed;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+}
+
+.scrim {
+	opacity: 0.4;
+	background: black;
+	position: fixed;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+}
+
+.dialog {
+	background: white;
+	border-radius: 2rem;
+	position: relative;
+	box-shadow: 0 0 1rem 0 rgba(0, 0, 0, 0.2);
+    z-index: 2;
+    margin: 2rem;
+    padding: 1rem;
+}

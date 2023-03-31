@@ -14,9 +14,10 @@ export const PersonDetail = () => {
 
 	return (
 		<Form
-			onSubmit={(values: Omit<Person, "id">) => {
+			onSubmit={(values: Omit<Person, "id" | "lastUpdated">) => {
 				updatePerson.mutate({
 					id: person?.id || "",
+					lastUpdated: new Date(),
 					...values,
 				});
 			}}

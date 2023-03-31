@@ -23,3 +23,6 @@ pnpm-debug.log*
 # IDE
 .vscode/
 .idea/
+
+# Data
+list.json

@@ -7,6 +7,7 @@ import {
 	PersistQueryClientProvider,
 	persistQueryClientRestore,
 } from "@tanstack/react-query-persist-client";
+import { getDefaultMutations } from "../default-mutations";
 
 const persister = createSyncStoragePersister({
 	storage: window.localStorage,
@@ -27,6 +28,8 @@ persistQueryClientRestore({
 	persister,
 	maxAge: 1000 * 60 * 60 * 24,
 });
+
+getDefaultMutations(queryClient);
 
 export const App = () => {
 	return (

@@ -1881,6 +1881,11 @@ hastscript@^7.0.0:
     property-information "^6.0.0"
     space-separated-tokens "^2.0.0"
 
+houseform@^1.9.1:
+  version "1.9.1"
+  resolved "https://registry.yarnpkg.com/houseform/-/houseform-1.9.1.tgz#9247320168030d8aa0cfaa18b52b3bc4f9577d96"
+  integrity sha512-xqjh5ntZmA2MgqHxu9b7SIezi7MmFUnlGnzXjBcEIZE1uzbaLRbg8XqS8DTr7EiTw2duQzfFJ1s4knu/INsrfw==
+
 html-escaper@^3.0.3:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/html-escaper/-/html-escaper-3.0.3.tgz#4d336674652beb1dcbc29ef6b6ba7f6be6fdfed6"

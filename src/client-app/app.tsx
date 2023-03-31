@@ -1,19 +1,42 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
 import { PeopleList } from "./list";
 import { PersonDetail } from "./detail";
+import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 
-const queryClient = new QueryClient();
+const persister = createSyncStoragePersister({
+	storage: window.localStorage,
+});
+
+const queryClient = new QueryClient({
+	defaultOptions: {
+		queries: {
+			cacheTime: 1000 * 60 * 60 * 24, // 24 hours
+			staleTime: 2000,
+			retry: 0,
+		},
+	},
+});
 
 export const App = () => {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<PeopleList />} />
-          <Route path="/detail/:id" element={<PersonDetail />} />
-        </Routes>
-      </BrowserRouter>
-    </QueryClientProvider>
-  );
+	return (
+		<PersistQueryClientProvider
+			client={queryClient}
+			persistOptions={{ persister }}
+			onSuccess={() => {
+				// resume mutations after initial restore from localStorage was successful
+				queryClient.resumePausedMutations().then(() => {
+					queryClient.invalidateQueries();
+				});
+			}}
+		>
+			<BrowserRouter>
+				<Routes>
+					<Route path="/" element={<PeopleList />} />
+					<Route path="/detail/:id" element={<PersonDetail />} />
+				</Routes>
+			</BrowserRouter>
+		</PersistQueryClientProvider>
+	);
 };

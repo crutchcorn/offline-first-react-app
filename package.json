@@ -1,27 +1,37 @@
 {
-  "name": "offline-first-react-app",
-  "type": "module",
-  "version": "0.0.1",
-  "scripts": {
-    "dev": "astro dev",
-    "start": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro"
-  },
-  "dependencies": {
-    "@astrojs/react": "^2.1.0",
-    "@tanstack/react-query": "^4.28.0",
-    "@types/react": "^18.0.21",
-    "@types/react-dom": "^18.0.6",
-    "astro": "^2.1.8",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0",
-    "react-router-dom": "^6.10.0",
-    "uuid": "^9.0.0"
-  },
-  "devDependencies": {
-    "@types/node": "^18.15.11",
-    "@types/uuid": "^9.0.1"
-  }
+	"name": "offline-first-react-app",
+	"type": "module",
+	"version": "0.0.1",
+	"scripts": {
+		"dev": "astro dev",
+		"start": "astro dev",
+		"build": "astro build",
+		"preview": "astro preview",
+		"astro": "astro",
+		"format": "prettier -w . --cache --plugin-search-dir=.",
+		"lint": "eslint . --ext .js,.ts,.astro"
+	},
+	"dependencies": {
+		"@astrojs/react": "^2.1.0",
+		"@tanstack/query-sync-storage-persister": "^4.27.1",
+		"@tanstack/react-query": "^4.28.0",
+		"@tanstack/react-query-persist-client": "^4.28.0",
+		"@types/react": "^18.0.21",
+		"@types/react-dom": "^18.0.6",
+		"astro": "^2.1.8",
+		"react": "^18.0.0",
+		"react-dom": "^18.0.0",
+		"react-router-dom": "^6.10.0",
+		"uuid": "^9.0.0"
+	},
+	"devDependencies": {
+		"@types/node": "^18.15.11",
+		"@types/uuid": "^9.0.1",
+		"@typescript-eslint/eslint-plugin": "^5.57.0",
+		"@typescript-eslint/parser": "^5.57.0",
+		"eslint": "^8.37.0",
+		"eslint-plugin-astro": "^0.26.1",
+		"prettier": "^2.8.7",
+		"prettier-plugin-astro": "^0.8.0"
+	}
 }

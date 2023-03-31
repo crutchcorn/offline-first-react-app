@@ -1,25 +1,32 @@
+import superjson from "superjson";
+
 export interface Person {
 	id: string;
 	name: string;
 	age: number;
+	lastUpdated: Date;
 }
 
 export const getPeopleList = () => {
-	return fetch("/api/people").then(
-		(response) => response.json() as unknown as Person[]
-	);
+	return fetch("/api/people")
+		.then((res) => res.text())
+		.then((response) => superjson.parse(response) as unknown as Person[]);
 };
 
-export const updatePerson = (person: Person) => {
+export const updatePerson = (person: Omit<Person, "lastUpdated">) => {
 	return fetch("/api/people", {
 		method: "PUT",
-		body: JSON.stringify(person),
-	}).then((response) => response.json() as unknown as Person[]);
+		body: superjson.stringify({ ...person, lastUpdated: new Date() }),
+	})
+		.then((res) => res.text())
+		.then((response) => superjson.parse(response) as unknown as Person[]);
 };
 
-export const addPerson = (person: Omit<Person, "id">) => {
+export const addPerson = (person: Omit<Person, "id" | "lastUpdated">) => {
 	return fetch("/api/people", {
 		method: "POST",
-		body: JSON.stringify(person),
-	}).then((response) => response.json() as unknown as Person[]);
+		body: superjson.stringify({ ...person, lastUpdated: new Date() }),
+	})
+		.then((res) => res.text())
+		.then((response) => superjson.parse(response) as unknown as Person[]);
 };

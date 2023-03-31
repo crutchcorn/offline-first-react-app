@@ -1,13 +1,11 @@
-import { useQueryClient } from "@tanstack/react-query";
-import { Person } from "../services/people";
 import { Link, useParams } from "react-router-dom";
+import { useGetPerson } from "../services/use-get-person";
 
 export const PersonDetail = () => {
 	const { id } = useParams();
-	const queryClient = useQueryClient();
-	const people = queryClient.getQueryData<Array<Person>>(["people"]);
+	const { person, isLoading } = useGetPerson(id || "");
 
-	const person = people?.find((p) => p.id === id);
+	if (isLoading) return <div>Loading...</div>;
 
 	return (
 		<div>

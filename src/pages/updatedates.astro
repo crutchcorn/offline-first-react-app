@@ -13,7 +13,7 @@
 
 			const btn = document.querySelector("#update");
 			btn.addEventListener("click", () => {
-				fetch("/api/secret", {
+				fetch("/api/updatedates", {
 					method: "GET",
 				})
 					.then((res) => res.text())

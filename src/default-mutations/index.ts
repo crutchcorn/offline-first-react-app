@@ -10,7 +10,6 @@ export function getDefaultMutations(queryClient: QueryClient) {
 			await queryClient.cancelQueries({ queryKey: ["people", person.id] });
 			const serverPersonData = await getPerson(person.id);
 			if (serverPersonData.lastUpdated > person.lastUpdated) {
-			// if (true) {
 				// Show diff UI, persist this information in case it's needed next time
 				store.dispatch({ type: addItemToDiff.type, payload: person });
 				return Promise.resolve();

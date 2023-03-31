@@ -33,6 +33,7 @@ export const PersonDetail = () => {
 					<Field name={"age"} initialValue={person?.age}>
 						{({ value, setValue }) => (
 							<input
+								type="number"
 								value={value}
 								onChange={(e) => setValue(e.target.valueAsNumber || 0)}
 							/>

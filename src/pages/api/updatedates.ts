@@ -1,4 +1,4 @@
-import superjson from "superjson";
+import { parse, stringify } from "superjson";
 import * as fs from "fs";
 import type { APIRoute } from "astro";
 
@@ -11,16 +11,14 @@ interface Person {
 	lastUpdated: Date;
 }
 
-export const get: APIRoute = () => {
-	const list = superjson.parse(fs.readFileSync(listPath, "utf8")) as Person[];
+export const GET: APIRoute = () => {
+	const list = parse<Person[]>(fs.readFileSync(listPath, "utf8"));
 	for (let i = 0; i < list.length; i++) {
 		list[i]!.lastUpdated = new Date();
 	}
 
-	const jsonList = superjson.stringify(list);
+	const jsonList = stringify(list);
 	fs.writeFileSync(listPath, jsonList);
 
-	return {
-		body: list,
-	};
+	return new Response(jsonList);
 };

@@ -1,5 +1,5 @@
 import type { QueryClient } from "@tanstack/react-query";
-import { Person, updatePerson } from "../services/people";
+import { type Person, updatePerson } from "../services/people";
 import { getPerson } from "../services/person";
 import { addItemToDiff } from "../store/diff-slice";
 import { store } from "../store/store";

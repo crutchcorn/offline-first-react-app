@@ -22,7 +22,7 @@ export const useUpdatePerson = (id: string) => {
 			queryClient.setQueryData(["people"], context?.previousData || []);
 		},
 		onSettled: () => {
-			queryClient.invalidateQueries({ queryKey: ["people"] });
+			void queryClient.invalidateQueries({ queryKey: ["people"] });
 		},
 	});
 

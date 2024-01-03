@@ -9,34 +9,38 @@
 		"preview": "astro preview",
 		"astro": "astro",
 		"format": "prettier -w . --cache --plugin-search-dir=.",
-		"lint": "eslint . --ext .js,.ts,.astro"
+		"lint": "eslint . --ext .js,.ts,.astro",
+		"tsc": "astro check && tsc --noEmit"
 	},
 	"dependencies": {
-		"@astrojs/react": "^2.1.0",
-		"@reduxjs/toolkit": "^1.9.3",
-		"@tanstack/query-sync-storage-persister": "^4.27.1",
-		"@tanstack/react-query": "^4.28.0",
-		"@tanstack/react-query-persist-client": "^4.28.0",
-		"@types/react": "^18.0.21",
-		"@types/react-dom": "^18.0.6",
-		"astro": "^2.1.8",
-		"houseform": "^1.9.1",
-		"react": "^18.0.0",
-		"react-dom": "^18.0.0",
-		"react-redux": "^8.0.5",
-		"react-router-dom": "^6.10.0",
+		"@astrojs/check": "^0.3.4",
+		"@astrojs/react": "^3.0.9",
+		"@reduxjs/toolkit": "^2.0.1",
+		"@tanstack/query-sync-storage-persister": "^5.17.1",
+		"@tanstack/react-query": "^5.17.1",
+		"@tanstack/react-query-persist-client": "^5.17.1",
+		"@types/react": "^18.2.46",
+		"@types/react-dom": "^18.2.18",
+		"astro": "^4.0.9",
+		"houseform": "^1.11.1",
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0",
+		"react-redux": "^9.0.4",
+		"react-router-dom": "^6.21.1",
 		"redux-persist": "^6.0.0",
-		"superjson": "^1.12.2",
-		"uuid": "^9.0.0"
+		"superjson": "^2.2.1",
+		"typescript": "^5.3.3",
+		"uuid": "^9.0.1"
 	},
 	"devDependencies": {
-		"@types/node": "^18.15.11",
-		"@types/uuid": "^9.0.1",
-		"@typescript-eslint/eslint-plugin": "^5.57.0",
-		"@typescript-eslint/parser": "^5.57.0",
-		"eslint": "^8.37.0",
-		"eslint-plugin-astro": "^0.26.1",
-		"prettier": "^2.8.7",
-		"prettier-plugin-astro": "^0.8.0"
-	}
+		"@types/node": "^20.10.6",
+		"@types/uuid": "^9.0.7",
+		"@typescript-eslint/eslint-plugin": "^6.17.0",
+		"@typescript-eslint/parser": "^6.17.0",
+		"eslint": "^8.56.0",
+		"eslint-plugin-astro": "^0.31.0",
+		"prettier": "^3.1.1",
+		"prettier-plugin-astro": "^0.12.3"
+	},
+	"packageManager": "yarn@4.0.2"
 }

@@ -3,6 +3,11 @@ const tsRules = {
 	"@typescript-eslint/no-empty-interface": "off",
 };
 
+const tsParserOptions = {
+		project: true,
+		tsconfigRootDir: __dirname,
+}
+
 module.exports = {
 	env: {
 		node: true,
@@ -27,15 +32,21 @@ module.exports = {
 			parserOptions: {
 				parser: "@typescript-eslint/parser",
 				extraFileExtensions: [".astro"],
+				parserOptions: {
+					...tsParserOptions,
+				},
 			},
-			rules: {
+				rules: {
 				...tsRules,
 			},
 		},
 		{
 			files: ["*.ts"],
 			parser: "@typescript-eslint/parser",
-			extends: ["plugin:@typescript-eslint/recommended"],
+			extends: ["plugin:@typescript-eslint/recommended-type-checked"],
+			parserOptions: {
+				...tsParserOptions,
+			},
 			rules: {
 				...tsRules,
 			},

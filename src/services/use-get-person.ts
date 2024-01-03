@@ -11,7 +11,8 @@ export const useGetPerson = (id: string) => {
 		isLoading,
 		isError,
 		error,
-	} = useQuery(["people"], {
+	} = useQuery({
+		queryKey: ["people"],
 		queryFn: async () => {
 			return await getPeopleList();
 		},

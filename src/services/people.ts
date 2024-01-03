@@ -1,4 +1,4 @@
-import superjson from "superjson";
+import { stringify, parse } from "superjson";
 
 export interface Person {
 	id: string;
@@ -10,23 +10,23 @@ export interface Person {
 export const getPeopleList = () => {
 	return fetch("/api/people")
 		.then((res) => res.text())
-		.then((response) => superjson.parse(response) as unknown as Person[]);
+		.then((response) => parse<Person[]>(response));
 };
 
 export const updatePerson = (person: Omit<Person, "lastUpdated">) => {
 	return fetch("/api/people", {
 		method: "PUT",
-		body: superjson.stringify({ ...person, lastUpdated: new Date() }),
+		body: stringify({ ...person, lastUpdated: new Date() }),
 	})
 		.then((res) => res.text())
-		.then((response) => superjson.parse(response) as unknown as Person[]);
+		.then((response) => parse<Person[]>(response));
 };
 
 export const addPerson = (person: Omit<Person, "id" | "lastUpdated">) => {
 	return fetch("/api/people", {
 		method: "POST",
-		body: superjson.stringify({ ...person, lastUpdated: new Date() }),
+		body: stringify({ ...person, lastUpdated: new Date() }),
 	})
 		.then((res) => res.text())
-		.then((response) => superjson.parse(response) as unknown as Person[]);
+		.then((response) => parse<Person[]>(response));
 };

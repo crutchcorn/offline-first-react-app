@@ -19,7 +19,7 @@ const IndividialDiffHandler = ({ person, close }: IndividualDiffHandler) => {
 		queryFn: () => {
 			return getPerson(person.id);
 		},
-		cacheTime: 0,
+		gcTime: 0,
 		retry: 3,
 		staleTime: 0,
 	});

@@ -3,7 +3,8 @@ import { getPeopleList } from "../services/people";
 import { Link } from "react-router-dom";
 
 export const PeopleList = () => {
-	const { data: people, isLoading } = useQuery(["people"], {
+	const { data: people, isLoading } = useQuery({
+		queryKey: ["people"],
 		queryFn: async () => {
 			return await getPeopleList();
 		},
@@ -14,7 +15,7 @@ export const PeopleList = () => {
 	return (
 		<div>
 			<ul>
-				{people!.map((person) => (
+				{people?.map((person) => (
 					<li key={person.id}>
 						<Link to={`/detail/${person.id}`}>{person.name}</Link>
 					</li>

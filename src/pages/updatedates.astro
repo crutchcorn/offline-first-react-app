@@ -9,15 +9,15 @@
 	<body>
 		<button id="update">Update all items' dates</button>
 		<script>
-			import superjson from "superjson";
+			import {parse} from "superjson";
 
 			const btn = document.querySelector("#update");
-			btn.addEventListener("click", () => {
+			btn?.addEventListener("click", () => {
 				fetch("/api/updatedates", {
 					method: "GET",
 				})
 					.then((res) => res.text())
-					.then((res) => alert(superjson.parse(res)));
+					.then((res) => alert(parse(res)));
 			});
 		</script>
 	</body>

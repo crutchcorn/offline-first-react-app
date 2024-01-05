@@ -4,8 +4,13 @@ import { getPeopleDatabaseList } from "../services/people.ts";
 import { customerKeys } from "../constants/query-keys.ts";
 import type { StoredCustomerList } from "../types/list";
 import { convertPersonDetailsToPersonList } from "../utils/list.ts";
+import { chunkForEach } from "../utils/chunk-for-each.ts";
 
-type InitialLoadedMetaStatus = "UNFINISHED" | "IN_PROGRESS" | "FINISHED" | "ERRORED";
+type InitialLoadedMetaStatus =
+	| "UNFINISHED"
+	| "IN_PROGRESS"
+	| "FINISHED"
+	| "ERRORED";
 
 const INITIAL_LOADED_META_KEY = "initial_loaded_meta";
 
@@ -14,11 +19,13 @@ const setStoredInitialLoadedMeta = (val: InitialLoadedMetaStatus) => {
 };
 
 export const useInitialDownload = () => {
-	const [initialLoadedMeta, setReactiveInitialLoadedMeta] = useState((): InitialLoadedMetaStatus => {
-		const rawMeta = localStorage.getItem(INITIAL_LOADED_META_KEY);
-		if (!rawMeta) return "UNFINISHED";
-		return rawMeta as InitialLoadedMetaStatus;
-	});
+	const [initialLoadedMeta, setReactiveInitialLoadedMeta] = useState(
+		(): InitialLoadedMetaStatus => {
+			const rawMeta = localStorage.getItem(INITIAL_LOADED_META_KEY);
+			if (!rawMeta) return "UNFINISHED";
+			return rawMeta as InitialLoadedMetaStatus;
+		},
+	);
 
 	const queryClient = useQueryClient();
 
@@ -34,18 +41,22 @@ export const useInitialDownload = () => {
 			const pickedData: StoredCustomerList = [];
 			// For each customer detail, take and chunk (so it doesn't block the main thread on 15,000 requests)
 			// Then, store the details in the query cache so we can load it offline
-			// TODO: Chunk this `forEach` using `setTimeout` and `await` it.
-			//  TODO-TODO: Add signals "abort" event to cancel timeout
-			//   @see https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal/abort_event#examples
-			database.forEach((customer) => {
-				queryClient.setQueryData(customerKeys.detail(customer.id), customer);
-				const pickedCustomer = convertPersonDetailsToPersonList(customer);
-				pickedData.push(pickedCustomer as never);
-			});
+			await chunkForEach(
+				database,
+				(customer) => {
+					queryClient.setQueryData(customerKeys.detail(customer.id), customer);
+					const pickedCustomer = convertPersonDetailsToPersonList(customer);
+					pickedData.push(pickedCustomer as never);
+				},
+				{
+					signal,
+					chunkSize: 100,
+				},
+			);
 			queryClient.setQueryData(customerKeys.lists(), pickedData);
 		},
 		retry: 0,
-		enabled: initialLoadedMeta === "UNFINISHED"
+		enabled: initialLoadedMeta === "UNFINISHED",
 	});
 
 	useEffect(() => {
@@ -70,23 +81,32 @@ export const useInitialDownload = () => {
 		};
 
 		if (initialLoadedMeta === "IN_PROGRESS") {
-			return <div>
-				<p>You closed the app prior to the download finishing. Please keep the app open and try again</p>
-				<button onClick={retry}>Retry</button>
-			</div>;
+			return (
+				<div>
+					<p>
+						You closed the app prior to the download finishing. Please keep the
+						app open and try again
+					</p>
+					<button onClick={retry}>Retry</button>
+				</div>
+			);
 		}
 
 		if (initialLoadedMeta === "ERRORED") {
-			return <div>
-				<p>There was an error downloading your data, do you want to try again?</p>
-				<button onClick={retry}>Retry</button>
-			</div>;
+			return (
+				<div>
+					<p>
+						There was an error downloading your data, do you want to try again?
+					</p>
+					<button onClick={retry}>Retry</button>
+				</div>
+			);
 		}
 
 		return null;
 	}, [initialLoadedMeta]);
 
 	return {
-		Component
+		Component,
 	};
 };

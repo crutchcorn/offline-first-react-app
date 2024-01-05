@@ -35,6 +35,18 @@ persistQueryClientRestore({
 
 getDefaultMutations(queryClient);
 
+const AppBase = () => {
+	return (
+		<>
+			<Routes>
+				<Route path="/" element={<PeopleList />} />
+				<Route path="/detail/:id" element={<PersonDetail />} />
+			</Routes>
+			<DiffHandler />
+		</>
+	);
+};
+
 export const App = () => {
 	return (
 		<Provider store={store}>
@@ -50,12 +62,8 @@ export const App = () => {
 					}}
 				>
 					<BrowserRouter>
-						<Routes>
-							<Route path="/" element={<PeopleList />} />
-							<Route path="/detail/:id" element={<PersonDetail />} />
-						</Routes>
+						<AppBase />
 					</BrowserRouter>
-					<DiffHandler />
 				</PersistQueryClientProvider>
 			</PersistGate>
 		</Provider>

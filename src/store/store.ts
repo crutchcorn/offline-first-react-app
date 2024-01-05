@@ -12,7 +12,11 @@ import {
 	persistStore,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import { type TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
+import {
+	type TypedUseSelectorHook,
+	useDispatch,
+	useSelector,
+} from "react-redux";
 
 const persistedReducer = persistReducer(
 	{
@@ -20,7 +24,7 @@ const persistedReducer = persistReducer(
 		storage,
 		whitelist: ["diff"],
 	},
-	rootReducer
+	rootReducer,
 );
 
 export const store = configureStore({

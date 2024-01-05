@@ -4,9 +4,9 @@ const tsRules = {
 };
 
 const tsParserOptions = {
-		project: true,
-		tsconfigRootDir: __dirname,
-}
+	project: true,
+	tsconfigRootDir: __dirname,
+};
 
 module.exports = {
 	env: {
@@ -36,12 +36,12 @@ module.exports = {
 					...tsParserOptions,
 				},
 			},
-				rules: {
+			rules: {
 				...tsRules,
 			},
 		},
 		{
-			files: ["*.ts"],
+			files: ["*.ts", "*.tsx"],
 			parser: "@typescript-eslint/parser",
 			extends: ["plugin:@typescript-eslint/recommended-type-checked"],
 			parserOptions: {

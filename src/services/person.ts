@@ -1,4 +1,4 @@
-import {parse} from "superjson";
+import { parse } from "superjson";
 
 export interface Person {
 	id: string;

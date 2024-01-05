@@ -21,7 +21,7 @@
 	border-radius: 2rem;
 	position: relative;
 	box-shadow: 0 0 1rem 0 rgba(0, 0, 0, 0.2);
-    z-index: 2;
-    margin: 2rem;
-    padding: 1rem;
+	z-index: 2;
+	margin: 2rem;
+	padding: 1rem;
 }

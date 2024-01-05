@@ -48,7 +48,7 @@ const IndividialDiffHandler = ({ person, close }: IndividualDiffHandler) => {
 							onSuccess: () => {
 								close();
 							},
-						}
+						},
 					);
 				}}
 			>
@@ -138,6 +138,6 @@ export const DiffHandler = () => {
 				}}
 			/>
 		</div>,
-		document.querySelector("#portal-injection")!
+		document.querySelector("#portal-injection")!,
 	);
 };

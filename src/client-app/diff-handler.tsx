@@ -57,7 +57,7 @@ const IndividialDiffHandler = ({ person, close }: IndividualDiffHandler) => {
 						<form
 							onSubmit={(e) => {
 								e.preventDefault();
-								submit();
+								void submit();
 							}}
 						>
 							<table>

@@ -27,7 +27,7 @@ const queryClient = new QueryClient({
 	},
 });
 
-persistQueryClientRestore({
+void persistQueryClientRestore({
 	queryClient,
 	persister,
 	maxAge: 1000 * 60 * 60 * 24,
@@ -56,8 +56,8 @@ export const App = () => {
 					persistOptions={{ persister }}
 					onSuccess={() => {
 						// resume mutations after initial restore from localStorage was successful
-						queryClient.resumePausedMutations().then(() => {
-							queryClient.invalidateQueries();
+						void queryClient.resumePausedMutations().then(() => {
+							return queryClient.invalidateQueries();
 						});
 					}}
 				>

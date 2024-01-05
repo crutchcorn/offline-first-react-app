@@ -11,3 +11,7 @@ export interface PersonDetailsInfo extends PersonListInfo {
 	suffix: string;
 	zodiacSign: string;
 }
+
+export interface BaseProps {
+	signal?: AbortSignal
+}

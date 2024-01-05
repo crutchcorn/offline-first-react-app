@@ -1,12 +1,20 @@
 import { Link, useParams } from "react-router-dom";
-import { useGetPerson } from "../services/use-get-person";
 import { Field, Form } from "houseform";
-import type { Person } from "../services/people";
 import { useUpdatePerson } from "../services/use-update-person";
+import { useQuery } from "@tanstack/react-query";
+import { customerKeys } from "../constants/query-keys.ts";
+import { getPerson } from "../services/person.ts";
+import type { PersonDetailsInfo } from "../types/api";
 
 export const PersonDetail = () => {
 	const { id } = useParams();
-	const { person, isLoading } = useGetPerson(id || "");
+	const { data: person, isLoading } = useQuery({
+		queryKey: customerKeys.detail(id!),
+		queryFn: async ({ signal }) => {
+			return getPerson({ id: id!, signal });
+		},
+		enabled: !!id,
+	});
 
 	const { updatePerson } = useUpdatePerson(id || "");
 
@@ -14,11 +22,11 @@ export const PersonDetail = () => {
 
 	return (
 		<Form
-			onSubmit={(values: Omit<Person, "id" | "lastUpdated">) => {
+			onSubmit={(values: Omit<PersonDetailsInfo, "id" | "lastUpdated">) => {
 				updatePerson.mutate({
-					id: person?.id || "",
-					lastUpdated: new Date(),
+					...(person ?? { id: id! }),
 					...values,
+					lastUpdated: new Date(),
 				});
 			}}
 		>
@@ -39,7 +47,7 @@ export const PersonDetail = () => {
 							/>
 						)}
 					</Field>
-					<button onClick={submit}>Update</button>
+					<button onClick={() => void submit}>Update</button>
 				</div>
 			)}
 		</Form>

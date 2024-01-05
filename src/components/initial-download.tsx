@@ -27,6 +27,12 @@ export const useInitialDownload = () => {
 		},
 	);
 
+	// Which chunk of the download are we on?
+	const [chunkMeta, setChunkMeta] = useState({
+		current: 0,
+		total: 0,
+	});
+
 	const queryClient = useQueryClient();
 
 	const { data, error, refetch } = useQuery({
@@ -38,21 +44,32 @@ export const useInitialDownload = () => {
 			queryClient.clear();
 			// Get the full database to store in the cache
 			const database = await getPeopleDatabaseList({ signal });
+			const CHUNK_SIZE = 100;
+			const totalChunks = Math.ceil(database.length / CHUNK_SIZE);
+			setChunkMeta({
+				current: 0,
+				total: totalChunks,
+			});
+
 			const pickedData: StoredCustomerList = [];
 			// For each customer detail, take and chunk (so it doesn't block the main thread on 15,000 requests)
 			// Then, store the details in the query cache so we can load it offline
-			await chunkForEach(
-				database,
-				(customer) => {
+			await chunkForEach({
+				arr: database,
+				eachChunkFn() {
+					setChunkMeta((prev) => ({
+						...prev,
+						current: prev.current + 1,
+					}));
+				},
+				eachItemfn(customer) {
 					queryClient.setQueryData(customerKeys.detail(customer.id), customer);
 					const pickedCustomer = convertPersonDetailsToPersonList(customer);
 					pickedData.push(pickedCustomer as never);
 				},
-				{
-					signal,
-					chunkSize: 100,
-				},
-			);
+				signal,
+				chunkSize: CHUNK_SIZE,
+			});
 			queryClient.setQueryData(customerKeys.lists(), pickedData);
 		},
 		retry: 0,
@@ -71,7 +88,14 @@ export const useInitialDownload = () => {
 
 	const Component = useCallback(() => {
 		if (initialLoadedMeta === "UNFINISHED") {
-			return <p>Downloading data...</p>;
+			return (
+				<div>
+					<p>Downloading data...</p>
+					<p>
+						{chunkMeta.current} of {chunkMeta.total} chunks downloaded
+					</p>
+				</div>
+			);
 		}
 
 		const retry = () => {

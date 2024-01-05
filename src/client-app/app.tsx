@@ -12,8 +12,8 @@ import { PersistGate } from "redux-persist/integration/react";
 import { persistor, store } from "../store/store";
 import { Provider } from "react-redux";
 import { DiffHandler } from "./diff-handler";
-import { useInitialDownload } from "./components/initial-download.tsx";
-import { RouteProtection } from "./components/route-protection.tsx";
+import { useInitialDownload } from "../components/initial-download.tsx";
+import { RouteProtection } from "../components/route-protection.tsx";
 
 const persister = createSyncStoragePersister({
 	storage: window.localStorage,

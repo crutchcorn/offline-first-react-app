@@ -1,11 +1,11 @@
 export interface PersonListInfo {
 	id: string;
-	name: string;
-	age: number;
 	lastUpdated: Date;
 }
 
 export interface PersonDetailsInfo extends PersonListInfo {
+	name: string;
+	age: number;
 	jobTitle: string;
 	bio: string;
 	suffix: string;

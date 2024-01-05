@@ -25,7 +25,7 @@ if (!fs.existsSync(apiListPath)) {
 }
 
 const getPersonListDetails = (person: PersonDetailsInfo) =>
-	pick(person, ["id", "name", "age", "lastUpdated"]);
+	pick(person, ["id", "lastUpdated"]);
 
 export const GET: APIRoute = () => {
 	const rawList = parse<PersonDetailsInfo[]>(

@@ -1,14 +1,8 @@
 import { parse } from "superjson";
+import type { PersonDetailsInfo } from "../types/api";
 
-export interface Person {
-	id: string;
-	name: string;
-	age: number;
-	lastUpdated: Date;
-}
-
-export const getPerson = (id: string) => {
-	return fetch(`/api/people/${id}`)
-		.then((res) => res.text())
-		.then((response) => parse<Person>(response));
+export const getPerson = async (id: string) => {
+	const res = await fetch(`/api/people/${id}`);
+	const response: string = await res.text();
+	return parse<PersonDetailsInfo>(response);
 };

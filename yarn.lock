@@ -406,6 +406,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/runtime@npm:^7.14.6":
+  version: 7.23.7
+  resolution: "@babel/runtime@npm:7.23.7"
+  dependencies:
+    regenerator-runtime: "npm:^0.14.0"
+  checksum: 3e304133ee55b0750e03e53cb4efb47fb2bdcdb5795f85bbffa10595196c34b9be60eb65bd6d833c87f49fc827f0365f86f95f51d85b188004d3128bb5129c93
+  languageName: node
+  linkType: hard
+
 "@babel/template@npm:^7.22.15":
   version: 7.22.15
   resolution: "@babel/template@npm:7.22.15"
@@ -680,6 +689,13 @@ __metadata:
   version: 8.56.0
   resolution: "@eslint/js@npm:8.56.0"
   checksum: 60b3a1cf240e2479cec9742424224465dc50e46d781da1b7f5ef240501b2d1202c225bd456207faac4b34a64f4765833345bc4ddffd00395e1db40fa8c426f5a
+  languageName: node
+  linkType: hard
+
+"@faker-js/faker@npm:^8.3.1":
+  version: 8.3.1
+  resolution: "@faker-js/faker@npm:8.3.1"
+  checksum: ed50c27a5674a8c755574ccc0c79c29fa70cd17d524b701269f584d2f78720c690da219f6111b0e743a4f6570fb08685d826b2d9e80ca9c1484b8c26047864c6
   languageName: node
   linkType: hard
 
@@ -4605,6 +4621,7 @@ __metadata:
   dependencies:
     "@astrojs/check": "npm:^0.3.4"
     "@astrojs/react": "npm:^3.0.9"
+    "@faker-js/faker": "npm:^8.3.1"
     "@reduxjs/toolkit": "npm:^2.0.1"
     "@tanstack/query-sync-storage-persister": "npm:^5.17.1"
     "@tanstack/react-query": "npm:^5.17.1"
@@ -4627,6 +4644,7 @@ __metadata:
     react-router-dom: "npm:^6.21.1"
     redux-persist: "npm:^6.0.0"
     superjson: "npm:^2.2.1"
+    ts-util-helpers: "npm:^1.0.1"
     typescript: "npm:^5.3.3"
     uuid: "npm:^9.0.1"
   languageName: unknown
@@ -5135,6 +5153,13 @@ __metadata:
   version: 5.0.1
   resolution: "redux@npm:5.0.1"
   checksum: b10c28357194f38e7d53b760ed5e64faa317cc63de1fb95bc5d9e127fab956392344368c357b8e7a9bedb0c35b111e7efa522210cfdc3b3c75e5074718e9069c
+  languageName: node
+  linkType: hard
+
+"regenerator-runtime@npm:^0.14.0":
+  version: 0.14.1
+  resolution: "regenerator-runtime@npm:0.14.1"
+  checksum: 1b16eb2c4bceb1665c89de70dcb64126a22bc8eb958feef3cd68fe11ac6d2a4899b5cd1b80b0774c7c03591dc57d16631a7f69d2daa2ec98100e2f29f7ec4cc4
   languageName: node
   linkType: hard
 
@@ -5951,6 +5976,15 @@ __metadata:
   peerDependencies:
     typescript: ">=4.2.0"
   checksum: 9408338819c3aca2a709f0bc54e3f874227901506cacb1163612a6c8a43df224174feb965a5eafdae16f66fc68fd7bfee8d3275d0fa73fbb8699e03ed26520c9
+  languageName: node
+  linkType: hard
+
+"ts-util-helpers@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "ts-util-helpers@npm:1.0.1"
+  dependencies:
+    "@babel/runtime": "npm:^7.14.6"
+  checksum: 75389966ad241206242224d3cfa3aa48fecb91c7eb639f8556f8043109546674191b20cb53cc8fba5dca965a509b7c229f697bbf5b54ff6137bcaa3a6f583c30
   languageName: node
   linkType: hard
 

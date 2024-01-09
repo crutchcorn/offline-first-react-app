@@ -1,10 +1,10 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { Person } from "../services/person";
+import type {PersonDetailsInfo} from "../types/api";
 
 const initialState = {
 	// An array of local changes made to "people" that require diff resolution by the user
 	// We should fetch server data every time to make sure this works as-intended
-	updatesToDiff: [] as Person[],
+	updatesToDiff: [] as PersonDetailsInfo[],
 };
 
 const diffSlice = createSlice({
@@ -14,7 +14,7 @@ const diffSlice = createSlice({
 		clearDiffs() {
 			return initialState;
 		},
-		addItemToDiff(state, action: PayloadAction<Person>) {
+		addItemToDiff(state, action: PayloadAction<PersonDetailsInfo>) {
 			state.updatesToDiff.push(action.payload);
 		},
 		clearTopItemOffDiff(state) {

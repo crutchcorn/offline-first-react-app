@@ -1,23 +1,23 @@
 import { useAppDispatch, useAppSelector } from "../store/store";
 import { createPortal } from "react-dom";
-import type { Person } from "../services/people";
 import { Field, Form } from "houseform";
 import { onlineManager, useQuery } from "@tanstack/react-query";
 import { getPerson } from "../services/person";
 import { Dialog } from "../components/dialog/dialog";
 import { useUpdatePerson } from "../services/use-update-person";
 import { clearTopItemOffDiff } from "../store/diff-slice";
+import type {PersonDetailsInfo} from "../types/api";
 
 interface IndividualDiffHandler {
-	person: Person;
+	person: PersonDetailsInfo;
 	close: () => void;
 }
 
 const IndividialDiffHandler = ({ person, close }: IndividualDiffHandler) => {
 	const { isLoading, data: serverPerson } = useQuery({
 		queryKey: ["serverperson", person.id],
-		queryFn: () => {
-			return getPerson(person.id);
+		queryFn: ({signal}) => {
+			return getPerson({id: person.id, signal});
 		},
 		gcTime: 0,
 		retry: 3,
@@ -37,12 +37,12 @@ const IndividialDiffHandler = ({ person, close }: IndividualDiffHandler) => {
 	return (
 		<Dialog>
 			<Form
-				onSubmit={(values: Omit<Person, "lastUpdated" | "id">) => {
+				onSubmit={(values: Omit<PersonDetailsInfo, "lastUpdated" | "id">) => {
 					updatePerson.mutate(
 						{
+							...values,
 							id: person.id,
 							lastUpdated: new Date(),
-							...values,
 						},
 						{
 							onSuccess: () => {

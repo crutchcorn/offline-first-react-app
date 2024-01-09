@@ -2533,7 +2533,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild@npm:^0.19.3, esbuild@npm:^0.19.6":
+"esbuild@npm:^0.19.3, esbuild@npm:^0.19.6, esbuild@npm:~0.19.10":
   version: 0.19.11
   resolution: "esbuild@npm:0.19.11"
   dependencies:
@@ -3043,6 +3043,15 @@ __metadata:
   version: 8.0.1
   resolution: "get-stream@npm:8.0.1"
   checksum: 5c2181e98202b9dae0bb4a849979291043e5892eb40312b47f0c22b9414fc9b28a3b6063d2375705eb24abc41ecf97894d9a51f64ff021511b504477b27b4290
+  languageName: node
+  linkType: hard
+
+"get-tsconfig@npm:^4.7.2":
+  version: 4.7.2
+  resolution: "get-tsconfig@npm:4.7.2"
+  dependencies:
+    resolve-pkg-maps: "npm:^1.0.0"
+  checksum: 169b2beababfbb16e8a0ae813ee59d3e14d4960231c816615161ab5be68ec07a394dce59695742ac84295e2efab8d9e89bcf3abaf5e253dfbec3496e01bb9a65
   languageName: node
   linkType: hard
 
@@ -4759,6 +4768,7 @@ __metadata:
     redux-persist: "npm:^6.0.0"
     superjson: "npm:^2.2.1"
     ts-util-helpers: "npm:^1.0.1"
+    tsx: "npm:^4.7.0"
     typescript: "npm:^5.3.3"
     uuid: "npm:^9.0.1"
   languageName: unknown
@@ -5417,6 +5427,13 @@ __metadata:
   version: 4.0.0
   resolution: "resolve-from@npm:4.0.0"
   checksum: 8408eec31a3112ef96e3746c37be7d64020cda07c03a920f5024e77290a218ea758b26ca9529fd7b1ad283947f34b2291c1c0f6aa0ed34acfdda9c6014c8d190
+  languageName: node
+  linkType: hard
+
+"resolve-pkg-maps@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "resolve-pkg-maps@npm:1.0.0"
+  checksum: fb8f7bbe2ca281a73b7ef423a1cbc786fb244bd7a95cbe5c3fba25b27d327150beca8ba02f622baea65919a57e061eb5005204daa5f93ed590d9b77463a567ab
   languageName: node
   linkType: hard
 
@@ -6163,6 +6180,22 @@ __metadata:
   version: 2.6.2
   resolution: "tslib@npm:2.6.2"
   checksum: e03a8a4271152c8b26604ed45535954c0a45296e32445b4b87f8a5abdb2421f40b59b4ca437c4346af0f28179780d604094eb64546bee2019d903d01c6c19bdb
+  languageName: node
+  linkType: hard
+
+"tsx@npm:^4.7.0":
+  version: 4.7.0
+  resolution: "tsx@npm:4.7.0"
+  dependencies:
+    esbuild: "npm:~0.19.10"
+    fsevents: "npm:~2.3.3"
+    get-tsconfig: "npm:^4.7.2"
+  dependenciesMeta:
+    fsevents:
+      optional: true
+  bin:
+    tsx: dist/cli.mjs
+  checksum: ac522a3017aedea31ff468dc161b6408d16a273bd23556716b550d1c08395d7e2568009c8927131481f0a8980ddda84999ac4bc2c00659b08a19b45bec31ef23
   languageName: node
   linkType: hard
 

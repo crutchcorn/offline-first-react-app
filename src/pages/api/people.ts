@@ -1,4 +1,3 @@
-import { faker } from "@faker-js/faker";
 import { stringify, parse } from "superjson";
 import { v4 as uuidV4 } from "uuid";
 import * as fs from "fs";
@@ -6,23 +5,6 @@ import type { APIRoute } from "astro";
 import { pick } from "ts-util-helpers";
 import type { PersonDetailsInfo } from "../../types/api";
 import { apiListPath } from "../../constants/api";
-
-// Seed the list if it doesn't exist
-if (!fs.existsSync(apiListPath)) {
-	const list = Array.from({ length: 15000 }, () => ({
-		// LIST information
-		id: uuidV4(),
-		lastUpdated: new Date(),
-		// DETAIL information
-		name: faker.person.firstName(),
-		age: faker.number.int({ min: 18, max: 70 }),
-		jobTitle: faker.person.jobTitle(),
-		bio: faker.person.bio(),
-		suffix: faker.person.suffix(),
-		zodiacSign: faker.person.zodiacSign(),
-	}));
-	fs.writeFileSync(apiListPath, stringify(list));
-}
 
 const getPersonListDetails = (person: PersonDetailsInfo) =>
 	pick(person, ["id", "lastUpdated"]);

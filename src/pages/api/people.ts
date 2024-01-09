@@ -12,10 +12,10 @@ if (!fs.existsSync(apiListPath)) {
 	const list = Array.from({ length: 15000 }, () => ({
 		// LIST information
 		id: uuidV4(),
-		name: faker.person.firstName(),
-		age: faker.number.int({ min: 18, max: 70 }),
 		lastUpdated: new Date(),
 		// DETAIL information
+		name: faker.person.firstName(),
+		age: faker.number.int({ min: 18, max: 70 }),
 		jobTitle: faker.person.jobTitle(),
 		bio: faker.person.bio(),
 		suffix: faker.person.suffix(),

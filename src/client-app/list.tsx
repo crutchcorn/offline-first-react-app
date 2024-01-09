@@ -1,14 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
-import { getPeopleList } from "../services/people";
 import { Link } from "react-router-dom";
+import {useListPerson} from "../services/use-list-person.ts";
 
 export const PeopleList = () => {
-	const { data: people, isLoading } = useQuery({
-		queryKey: ["people"],
-		queryFn: async () => {
-			return await getPeopleList();
-		},
-	});
+	const { data: people, isLoading } = useListPerson();
 
 	if (isLoading) return <div>Loading...</div>;
 

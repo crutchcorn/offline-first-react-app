@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { customerKeys } from "../constants/query-keys.ts";
+import { customerKeys } from "../constants/query-keys";
 import type { PersonDetailsInfo, PersonListInfo } from "../types/api";
-import { convertPersonDetailsToPersonList } from "../utils/list.ts";
+import { convertPersonDetailsToPersonList } from "../utils/list";
 
 export const useUpdatePerson = (id: string) => {
 	const queryClient = useQueryClient();

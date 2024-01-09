@@ -2,8 +2,8 @@ import { Link, useParams } from "react-router-dom";
 import { Field, Form } from "houseform";
 import { useUpdatePerson } from "../services/use-update-person";
 import { useQuery } from "@tanstack/react-query";
-import { customerKeys } from "../constants/query-keys.ts";
-import { getPerson } from "../services/person.ts";
+import { customerKeys } from "../constants/query-keys";
+import { getPerson } from "../services/person";
 import type { PersonDetailsInfo } from "../types/api";
 
 export const PersonDetail = () => {

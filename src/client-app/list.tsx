@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import {useListPerson} from "../services/use-list-person.ts";
+import {useListPerson} from "../services/use-list-person";
 
 export const PeopleList = () => {
 	const { data: people, isLoading } = useListPerson();

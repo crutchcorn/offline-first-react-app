@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getPeopleDatabaseList } from "../services/people.ts";
-import { customerKeys } from "../constants/query-keys.ts";
+import { getPeopleDatabaseList } from "../services/people";
+import { customerKeys } from "../constants/query-keys";
 import type { StoredCustomerList } from "../types/list";
-import { convertPersonDetailsToPersonList } from "../utils/list.ts";
-import { chunkForEach } from "../utils/chunk-for-each.ts";
+import { convertPersonDetailsToPersonList } from "../utils/list";
+import { chunkForEach } from "../utils/chunk-for-each";
 
 type InitialLoadedMetaStatus =
 	| "UNFINISHED"

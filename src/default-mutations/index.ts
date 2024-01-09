@@ -1,8 +1,8 @@
 import type { QueryClient } from "@tanstack/react-query";
-import { customerKeys } from "../constants/query-keys.ts";
+import { customerKeys } from "../constants/query-keys";
 import type { PersonDetailsInfo } from "../types/api";
 import { getPerson } from "../services/person";
-import { updatePerson } from "../services/people.ts";
+import { updatePerson } from "../services/people";
 import { store } from "../store/store";
 import { addItemToDiff } from "../store/diff-slice";
 

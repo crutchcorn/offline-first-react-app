@@ -1,8 +1,9 @@
 import {useQuery, useQueryClient} from "@tanstack/react-query";
-import { customerKeys } from "../constants/query-keys.ts";
-import {getPeopleIdList} from "./people.ts";
+import { customerKeys } from "../constants/query-keys";
+import {getPeopleIdList} from "./people";
 import type {PersonDetailsInfo} from "../types/api";
-import {getPerson} from "./person.ts";
+import {getPerson} from "./person";
+import { chunkForEach } from "../utils/chunk-for-each";
 
 export const useListPerson = () => {
   const queryClient = useQueryClient();

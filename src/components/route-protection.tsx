@@ -1,11 +1,11 @@
-import type { JSXElementConstructor, PropsWithChildren } from "react";
+import type {FC, PropsWithChildren} from "react";
 
 interface RouteProtectionProps {
-	conditionalComponent: JSXElementConstructor<Record<string, never>>,
+	conditionalComponent: FC
 }
 
 export function RouteProtection({conditionalComponent: Display, children}: PropsWithChildren<RouteProtectionProps>) {
-	const el = <Display/>
+	const el = Display({})
 	if (el) {
 		return <>{el}</>
 	}

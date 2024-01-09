@@ -4,6 +4,7 @@ interface ChunkForEachOptions<T> {
 	arr: T[];
 	eachItemfn: (item: T) => void;
 	eachChunkFn: (chunkIndex: number) => void;
+	delayTime?: (i: number) => number;
 }
 
 /**
@@ -12,7 +13,7 @@ interface ChunkForEachOptions<T> {
  * Chunks are not guaranteed to be processed in order.
  */
 export async function chunkForEach<T>(opts: ChunkForEachOptions<T>) {
-	const { eachChunkFn, eachItemfn, arr, chunkSize = 100, signal } = opts;
+	const { eachChunkFn, eachItemfn, arr, chunkSize = 100, signal, delayTime = () => 1 } = opts;
 	const chunks = Math.ceil(arr.length / chunkSize);
 
 	const promises: Promise<void>[] = [];
@@ -27,7 +28,7 @@ export async function chunkForEach<T>(opts: ChunkForEachOptions<T>) {
 						resolve();
 					});
 					eachChunkFn(i);
-				}, 1);
+				}, delayTime(i));
 
 				if (signal) {
 					signal.addEventListener("abort", () => {

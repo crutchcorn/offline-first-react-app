@@ -18,6 +18,8 @@ const setStoredInitialLoadedMeta = (val: InitialLoadedMetaStatus) => {
 	localStorage.setItem(INITIAL_LOADED_META_KEY, val);
 };
 
+let i = 0;
+
 export const useInitialDownload = () => {
 	const [initialLoadedMeta, setReactiveInitialLoadedMeta] = useState(
 		(): InitialLoadedMetaStatus => {
@@ -46,10 +48,11 @@ export const useInitialDownload = () => {
 			const database = await getPeopleDatabaseList({ signal });
 			const CHUNK_SIZE = 100;
 			const totalChunks = Math.ceil(database.length / CHUNK_SIZE);
-			setChunkMeta({
-				current: 0,
-				total: totalChunks,
-			});
+			// // TODO: Add back via a component wrapping `useQuery` and `memo` to avoid re-renders (and refetching using query)
+			// setChunkMeta({
+			// 	current: 0,
+			// 	total: totalChunks,
+			// });
 
 			const pickedData: StoredCustomerList = [];
 			// For each customer detail, take and chunk (so it doesn't block the main thread on 15,000 requests)
@@ -57,20 +60,24 @@ export const useInitialDownload = () => {
 			await chunkForEach({
 				arr: database,
 				eachChunkFn() {
-					setChunkMeta((prev) => ({
-						...prev,
-						current: prev.current + 1,
-					}));
+					console.log("CHUNK", ++i, "done")
+					// // TODO: Add back
+					// setChunkMeta((prev) => ({
+					// 	...prev,
+					// 	current: prev.current + 1,
+					// }));
 				},
 				eachItemfn(customer) {
 					queryClient.setQueryData(customerKeys.detail(customer.id), customer);
 					const pickedCustomer = convertPersonDetailsToPersonList(customer);
 					pickedData.push(pickedCustomer as never);
 				},
+				delayTime: i => i * 100,
 				signal,
 				chunkSize: CHUNK_SIZE,
 			});
 			queryClient.setQueryData(customerKeys.lists(), pickedData);
+			return true
 		},
 		retry: 0,
 		enabled: initialLoadedMeta === "UNFINISHED",
@@ -79,11 +86,13 @@ export const useInitialDownload = () => {
 	useEffect(() => {
 		if (!data) return;
 		setStoredInitialLoadedMeta("FINISHED");
+		setReactiveInitialLoadedMeta("FINISHED");
 	}, [data]);
 
 	useEffect(() => {
 		if (!error) return;
 		setStoredInitialLoadedMeta("ERRORED");
+		setReactiveInitialLoadedMeta("ERRORED");
 	}, [error]);
 
 	const Component = useCallback(() => {

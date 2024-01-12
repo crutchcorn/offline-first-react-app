@@ -47,7 +47,7 @@ export const PersonDetail = () => {
 							/>
 						)}
 					</Field>
-					<button onClick={() => void submit}>Update</button>
+					<button onClick={() => void submit()}>Update</button>
 				</div>
 			)}
 		</Form>

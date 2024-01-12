@@ -6,7 +6,7 @@ import {faker} from "@faker-js/faker";
 import {stringify} from "superjson";
 
 if (!fs.existsSync(apiListPath)) {
-  const list = Array.from({ length: 15000 }, () => ({
+  const list = Array.from({ length: 1000 }, () => ({
     // LIST information
     id: uuidV4(),
     lastUpdated: new Date(),

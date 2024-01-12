@@ -38,16 +38,20 @@ void persistQueryClientRestore({
 getDefaultMutations(queryClient);
 
 const AppBase = () => {
-	const { Component: InitialDownload } = useInitialDownload();
+	const { DisplayComponent, DownloadComponent } = useInitialDownload();
 
 	return (
-		<RouteProtection conditionalComponent={InitialDownload}>
-			<Routes>
-				<Route path="/" element={<PeopleList />} />
-				<Route path="/detail/:id" element={<PersonDetail />} />
-			</Routes>
-			<DiffHandler />
-		</RouteProtection>
+		<>
+			<DownloadComponent />
+			<DisplayComponent />
+			{/*<RouteProtection conditionalComponent={DisplayComponent}>*/}
+			{/*	<Routes>*/}
+			{/*		<Route path="/" element={<PeopleList />} />*/}
+			{/*		<Route path="/detail/:id" element={<PersonDetail />} />*/}
+			{/*	</Routes>*/}
+			{/*	<DiffHandler />*/}
+			{/*</RouteProtection>*/}
+		</>
 	);
 };
 

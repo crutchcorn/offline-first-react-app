@@ -2,8 +2,9 @@ interface ChunkForEachOptions<T> {
 	chunkSize?: number;
 	signal?: AbortSignal;
 	arr: T[];
-	eachItemfn: (item: T) => void;
-	eachChunkFn: (chunkIndex: number) => void;
+	eachItemfn: (item: T) => void | Promise<void>;
+	// Called after each chunk is processed
+	eachChunkFn: (chunkIndex: number) => void | Promise<void>;
 	delayTime?: (i: number) => number;
 }
 
@@ -13,32 +14,45 @@ interface ChunkForEachOptions<T> {
  * Chunks are not guaranteed to be processed in order.
  */
 export async function chunkForEach<T>(opts: ChunkForEachOptions<T>) {
-	const { eachChunkFn, eachItemfn, arr, chunkSize = 100, signal, delayTime = () => 1 } = opts;
+	const {
+		eachChunkFn,
+		eachItemfn,
+		arr,
+		chunkSize = 100,
+		signal,
+		delayTime = () => 1,
+	} = opts;
 	const chunks = Math.ceil(arr.length / chunkSize);
 
-	const promises: Promise<void>[] = [];
 	for (let i = 0; i < chunks; i++) {
+		if (signal?.aborted) {
+			return;
+		}
 		const start = i * chunkSize;
 		const end = start + chunkSize;
-		promises.push(
-			new Promise<void>((resolve) => {
-				const timeout = setTimeout(() => {
-					arr.slice(start, end).forEach((item) => {
-						eachItemfn(item);
-						resolve();
-					});
-					eachChunkFn(i);
-				}, delayTime(i));
+		const slice = arr.slice(start, end);
 
-				if (signal) {
-					signal.addEventListener("abort", () => {
-						clearTimeout(timeout);
-						resolve();
-					});
+		await new Promise<void>((resolve, reject) => {
+			// eslint-disable-next-line @typescript-eslint/no-misused-promises
+			const timeout = setTimeout(async () => {
+				try {
+					await Promise.all(
+						slice.map(async (item) => {
+							await eachItemfn(item);
+						}),
+					);
+					await eachChunkFn(i);
+					resolve();
+				} catch (err) {
+					reject(err);
 				}
-			}),
-		);
+			}, delayTime(i));
+			if (signal) {
+				signal.addEventListener("abort", () => {
+					clearTimeout(timeout);
+					resolve();
+				});
+			}
+		});
 	}
-
-	return await Promise.all(promises);
 }

@@ -30,7 +30,11 @@ const setStoredInitialLoadedMeta = (val: InitialLoadedMetaStatus) => {
 	localStorage.setItem(INITIAL_LOADED_META_KEY, val);
 };
 
-type QueryMeta = UseQueryResult<boolean, Error>;
+type QueryMeta = {
+	isSuccess: boolean;
+	isError: boolean;
+	refetch: UseQueryResult<boolean, unknown>["refetch"];
+};
 
 interface DownloadInitialDataProps {
 	initialLoadedMeta: InitialLoadedMetaStatus;
@@ -45,7 +49,7 @@ const DownloadInitialDataBase = ({
 }: DownloadInitialDataProps) => {
 	const queryClient = useQueryClient();
 
-	const queryProps = useQuery({
+	const { isSuccess, isError, refetch } = useQuery({
 		queryKey: initialDownloadKeys.status(initialLoadedMeta),
 		queryFn: async ({ signal }) => {
 			// Set the stored value so that we can warn if the user closes the app before the download is finished.
@@ -77,7 +81,7 @@ const DownloadInitialDataBase = ({
 					const pickedCustomer = convertPersonDetailsToPersonList(customer);
 					pickedData.push(pickedCustomer as never);
 				},
-				delayTime: (i) => i * 100,
+				delayTime: () => 100,
 				signal,
 				chunkSize: CHUNK_SIZE,
 			});
@@ -90,8 +94,8 @@ const DownloadInitialDataBase = ({
 	});
 
 	useLayoutEffect(() => {
-		setQueryMeta(queryProps);
-	}, [queryProps]);
+		setQueryMeta({ isSuccess, isError, refetch });
+	}, [isSuccess, isError, refetch]);
 
 	return null;
 };

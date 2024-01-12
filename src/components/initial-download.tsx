@@ -13,7 +13,7 @@ import {
 	type UseQueryResult,
 } from "@tanstack/react-query";
 import { getPeopleDatabaseList } from "../services/people";
-import { customerKeys } from "../constants/query-keys";
+import { customerKeys, initialDownloadKeys } from "../constants/query-keys";
 import type { StoredCustomerList } from "../types/list";
 import { convertPersonDetailsToPersonList } from "../utils/list";
 import { chunkForEach } from "../utils/chunk-for-each";
@@ -46,12 +46,12 @@ const DownloadInitialDataBase = ({
 	const queryClient = useQueryClient();
 
 	const queryProps = useQuery({
-		queryKey: customerKeys.all,
+		queryKey: initialDownloadKeys.status(initialLoadedMeta),
 		queryFn: async ({ signal }) => {
 			// Set the stored value so that we can warn if the user closes the app before the download is finished.
 			setStoredInitialLoadedMeta("IN_PROGRESS");
 			// Clear the query cache so that we can know that the app doesn't have any stale data
-			queryClient.clear();
+			queryClient.removeQueries({ queryKey: customerKeys.all });
 			// Get the full database to store in the cache
 			const database = await getPeopleDatabaseList({ signal });
 			const CHUNK_SIZE = 100;
@@ -64,7 +64,6 @@ const DownloadInitialDataBase = ({
 			const pickedData: StoredCustomerList = [];
 			// For each customer detail, take and chunk (so it doesn't block the main thread on 15,000 requests)
 			// Then, store the details in the query cache so we can load it offline
-			// TODO: Add abort signal support
 			await chunkForEach({
 				arr: database,
 				eachChunkFn() {
@@ -82,6 +81,7 @@ const DownloadInitialDataBase = ({
 				signal,
 				chunkSize: CHUNK_SIZE,
 			});
+			if (signal.aborted) return false;
 			queryClient.setQueryData(customerKeys.lists(), pickedData);
 			return true;
 		},
@@ -157,7 +157,6 @@ export const useInitialDownload = () => {
 		}
 
 		const retry = useCallback(() => {
-			console.log("RETRYING");
 			setStoredInitialLoadedMeta("UNFINISHED");
 			setReactiveInitialLoadedMeta("UNFINISHED");
 			void downloadQueryMeta?.refetch();
@@ -187,7 +186,7 @@ export const useInitialDownload = () => {
 		}
 
 		return null;
-	}, [initialLoadedMeta]);
+	}, [initialLoadedMeta, chunkMeta]);
 
 	return {
 		// This should only be displayed when there is a return value

@@ -43,14 +43,13 @@ const AppBase = () => {
 	return (
 		<>
 			<DownloadComponent />
-			<DisplayComponent />
-			{/*<RouteProtection conditionalComponent={DisplayComponent}>*/}
-			{/*	<Routes>*/}
-			{/*		<Route path="/" element={<PeopleList />} />*/}
-			{/*		<Route path="/detail/:id" element={<PersonDetail />} />*/}
-			{/*	</Routes>*/}
-			{/*	<DiffHandler />*/}
-			{/*</RouteProtection>*/}
+			<RouteProtection conditionalComponent={DisplayComponent}>
+				<Routes>
+					<Route path="/" element={<PeopleList />} />
+					<Route path="/detail/:id" element={<PersonDetail />} />
+				</Routes>
+				<DiffHandler />
+			</RouteProtection>
 		</>
 	);
 };

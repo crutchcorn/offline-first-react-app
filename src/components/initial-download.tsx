@@ -19,6 +19,7 @@ import { customerKeys, initialDownloadKeys } from "../constants/query-keys";
 import { convertPersonDetailsToPersonList } from "../utils/list";
 import { chunkForEach } from "../utils/chunk-for-each";
 import type { PersonListInfo } from "../types/api";
+import { storeLastUpdated } from "../services/use-list-person.ts";
 
 type InitialLoadedMetaStatus =
 	| "UNFINISHED"
@@ -96,6 +97,7 @@ const DownloadInitialDataBase = forwardRef<Refetch, DownloadInitialDataProps>(
 		useLayoutEffect(() => {
 			if (isSuccess) {
 				setReactiveInitialLoadedMeta("FINISHED");
+				storeLastUpdated();
 				setStoredInitialLoadedMeta("FINISHED");
 			} else if (isError) {
 				setReactiveInitialLoadedMeta("ERRORED");

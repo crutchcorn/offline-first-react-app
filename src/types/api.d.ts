@@ -1,10 +1,10 @@
 export interface PersonListInfo {
+	name: string;
 	id: string;
 	lastUpdated: Date;
 }
 
 export interface PersonDetailsInfo extends PersonListInfo {
-	name: string;
 	age: number;
 	jobTitle: string;
 	bio: string;
@@ -13,5 +13,9 @@ export interface PersonDetailsInfo extends PersonListInfo {
 }
 
 export interface BaseProps {
-	signal?: AbortSignal
+	signal?: AbortSignal;
+}
+
+export interface ListDetailsProps {
+	lastUpdated: Date | null;
 }

@@ -11,9 +11,18 @@ export const getPeopleIdList = async ({ signal }: BaseProps) => {
 	return parse<PersonListInfo[]>(response);
 };
 
-export const getPeopleDatabaseList = async ({ signal }: BaseProps) => {
+interface GetPeopleDatabaseListProps extends BaseProps {
+	lastUpdated?: Date | null;
+}
+
+export const getPeopleDatabaseList = async ({
+	signal,
+	lastUpdated = null,
+}: GetPeopleDatabaseListProps) => {
 	const res = await fetch("/api/people/list-details", {
+		method: "POST",
 		signal: signal ?? null,
+		body: stringify({ lastUpdated }),
 	});
 	const response: string = await res.text();
 	return parse<PersonDetailsInfo[]>(response);

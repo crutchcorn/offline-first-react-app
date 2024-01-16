@@ -6,7 +6,6 @@ import {
 	useCallback,
 	useImperativeHandle,
 	useLayoutEffect,
-	useMemo,
 	useRef,
 	useState,
 } from "react";
@@ -17,9 +16,9 @@ import {
 } from "@tanstack/react-query";
 import { getPeopleDatabaseList } from "../services/people";
 import { customerKeys, initialDownloadKeys } from "../constants/query-keys";
-import type { StoredCustomerList } from "../types/list";
 import { convertPersonDetailsToPersonList } from "../utils/list";
 import { chunkForEach } from "../utils/chunk-for-each";
+import type { PersonListInfo } from "../types/api";
 
 type InitialLoadedMetaStatus =
 	| "UNFINISHED"
@@ -61,7 +60,7 @@ const DownloadInitialDataBase = forwardRef<Refetch, DownloadInitialDataProps>(
 					total: totalChunks,
 				});
 
-				const pickedData: StoredCustomerList = [];
+				const pickedData: PersonListInfo[] = [];
 				// For each customer detail, take and chunk (so it doesn't block the main thread on 15,000 requests)
 				// Then, store the details in the query cache so we can load it offline
 				await chunkForEach({

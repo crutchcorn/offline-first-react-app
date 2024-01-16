@@ -2,6 +2,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { customerKeys } from "../constants/query-keys";
 import type { PersonListInfo } from "../types/api";
 import { getPeopleDatabaseList } from "./people.ts";
+import { convertPersonDetailsToPersonList } from "../utils/list.ts";
 
 const LAST_UPDATED_KEY = "last-updated";
 
@@ -33,13 +34,14 @@ export const useListPerson = () => {
 
 			for (const person of newList) {
 				queryClient.setQueryData(customerKeys.detail(person.id), person);
+				const personListItem = convertPersonDetailsToPersonList(person);
 				const matchedPersonIdx = prevCachedData.findIndex(
-					(p) => p.id === person.id,
+					(p) => p.id === personListItem.id,
 				);
 				if (matchedPersonIdx === -1) {
-					prevCachedData.push(person);
+					prevCachedData.push(personListItem);
 				} else {
-					prevCachedData[matchedPersonIdx] = person;
+					prevCachedData[matchedPersonIdx] = personListItem;
 				}
 			}
 

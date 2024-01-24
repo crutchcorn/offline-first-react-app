@@ -14,6 +14,7 @@ import { Provider } from "react-redux";
 import { DiffHandler } from "./diff-handler";
 import { useInitialDownload } from "../components/initial-download.tsx";
 import { RouteProtection } from "../components/route-protection.tsx";
+import {Layout} from "./layout.tsx";
 
 const persister = createSyncStoragePersister({
 	storage: window.localStorage,
@@ -45,8 +46,10 @@ const AppBase = () => {
 			<DownloadComponent />
 			<RouteProtection conditionalComponent={DisplayComponent}>
 				<Routes>
-					<Route path="/" element={<PeopleList />} />
-					<Route path="/detail/:id" element={<PersonDetail />} />
+					<Route path="/" element={<Layout />}>
+						<Route path="/" index element={<PeopleList />} />
+						<Route path="/detail/:id" element={<PersonDetail />} />
+					</Route>
 				</Routes>
 				<DiffHandler />
 			</RouteProtection>

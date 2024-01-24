@@ -6,8 +6,9 @@ import { updatePerson } from "../services/people";
 import { store } from "../store/store";
 import { addItemToDiff } from "../store/diff-slice";
 
+// Any mutation that might be paused needs to live here, as there is no way to "resume"
+// a mutation or query that isn't a default
 export function getDefaultMutations(queryClient: QueryClient) {
-	// TODO: Do I have default and custom mutations mixed up?
 	queryClient.setMutationDefaults(customerKeys.details(), {
 		mutationFn: async (person: PersonDetailsInfo) => {
 			await queryClient.cancelQueries({

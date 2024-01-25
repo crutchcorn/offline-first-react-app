@@ -15,7 +15,7 @@ import {
 	type UseQueryResult,
 } from "@tanstack/react-query";
 import { getPeopleDatabaseList } from "../services/people";
-import { customerKeys, initialDownloadKeys } from "../constants/query-keys";
+import {customerKeys, type GetKeyReturn, initialDownloadKeys, setQueryData} from "../constants/query-keys";
 import { convertPersonDetailsToPersonList } from "../utils/list";
 import { chunkForEach } from "../utils/chunk-for-each";
 import type { PersonListInfo } from "../types/api";
@@ -46,12 +46,12 @@ const DownloadInitialDataBase = forwardRef<Refetch, DownloadInitialDataProps>(
 		const queryClient = useQueryClient();
 
 		const { isSuccess, isError, refetch } = useQuery({
-			queryKey: initialDownloadKeys.status(initialLoadedMeta),
-			queryFn: async ({ signal }) => {
+			queryKey: initialDownloadKeys.status(initialLoadedMeta).key,
+			queryFn: async ({ signal }): Promise<GetKeyReturn<typeof initialDownloadKeys.status>> => {
 				// Set the stored value so that we can warn if the user closes the app before the download is finished.
 				setStoredInitialLoadedMeta("IN_PROGRESS");
 				// Clear the query cache so that we can know that the app doesn't have any stale data
-				queryClient.removeQueries({ queryKey: customerKeys.all });
+				queryClient.removeQueries({ queryKey: customerKeys.all().key });
 				// Get the full database to store in the cache
 				const database = await getPeopleDatabaseList({ signal });
 				const CHUNK_SIZE = 100;
@@ -73,8 +73,7 @@ const DownloadInitialDataBase = forwardRef<Refetch, DownloadInitialDataProps>(
 						}));
 					},
 					eachItemfn(customer) {
-						queryClient.setQueryData(
-							customerKeys.detail(customer.id),
+						setQueryData(queryClient, customerKeys.detail(customer.id),
 							customer,
 						);
 						const pickedCustomer = convertPersonDetailsToPersonList(customer);
@@ -85,7 +84,7 @@ const DownloadInitialDataBase = forwardRef<Refetch, DownloadInitialDataProps>(
 					chunkSize: CHUNK_SIZE,
 				});
 				if (signal.aborted) return false;
-				queryClient.setQueryData(customerKeys.lists(), pickedData);
+				setQueryData(queryClient, customerKeys.lists(), pickedData);
 				return true;
 			},
 			retry: 0,

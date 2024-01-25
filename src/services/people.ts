@@ -39,7 +39,7 @@ export const updatePerson = async ({ person, signal }: UpdatePersonProps) => {
 		body: stringify({ ...person, lastUpdated: new Date() }),
 	});
 	const response: string = await res.text();
-	return parse<PersonDetailsInfo[]>(response);
+	return parse<PersonDetailsInfo>(response);
 };
 
 interface AddPersonProps extends BaseProps {

@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { customerKeys } from "../constants/query-keys";
+import {customerKeys, type GetKeyReturn, setQueryData} from "../constants/query-keys";
 import type { PersonListInfo } from "../types/api";
 import { getPeopleDatabaseList } from "./people.ts";
 import { convertPersonDetailsToPersonList } from "../utils/list.ts";
@@ -21,10 +21,10 @@ export const useListPerson = () => {
 	const queryClient = useQueryClient();
 
 	return useQuery({
-		queryKey: customerKeys.lists(),
-		queryFn: async ({ signal }) => {
+		queryKey: customerKeys.lists().key,
+		queryFn: async ({ signal }): Promise<GetKeyReturn<typeof customerKeys.lists>> => {
 			const prevCachedData =
-				queryClient.getQueryData<PersonListInfo[]>(customerKeys.lists()) ||
+				queryClient.getQueryData<PersonListInfo[]>(customerKeys.lists().key) ||
 				([] as PersonListInfo[]);
 
 			const lastUpdatedStr = localStorage.getItem(LAST_UPDATED_KEY);
@@ -33,7 +33,7 @@ export const useListPerson = () => {
 			const newList = await getPeopleDatabaseList({ lastUpdated, signal });
 
 			for (const person of newList) {
-				queryClient.setQueryData(customerKeys.detail(person.id), person);
+				setQueryData(queryClient, customerKeys.detail(person.id), person);
 				const personListItem = convertPersonDetailsToPersonList(person);
 				const matchedPersonIdx = prevCachedData.findIndex(
 					(p) => p.id === personListItem.id,

@@ -1,34 +1,34 @@
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {customerKeys} from "../constants/query-keys";
-import type {PersonDetailsInfo, PersonListInfo} from "../types/api";
+import {customerKeys, getQueryData, setQueryData} from "../constants/query-keys";
+import type {PersonDetailsInfo} from "../types/api";
 import {convertPersonDetailsToPersonList} from "../utils/list";
 import {clearPreviousMutations} from "../utils/clear-previous-mutations.ts";
 
 export const useUpdatePerson = (id: string) => {
   const queryClient = useQueryClient();
   const updatePerson = useMutation({
-    mutationKey: customerKeys.detail(id),
+    mutationKey: customerKeys.detail(id).key,
+    // eslint-disable-next-line @typescript-eslint/require-await
     onMutate: async (person: PersonDetailsInfo) => {
-			clearPreviousMutations({queryClient, mutationKey: customerKeys.detail(id)})
+			clearPreviousMutations({queryClient, mutationKey: customerKeys.detail(id).key})
 
-      const listData =
-        queryClient.getQueryData<Array<PersonListInfo>>(customerKeys.lists()) ||
+      const listData = getQueryData(queryClient, customerKeys.lists()) ||
         [];
 
       const personListIndex = listData.findIndex((p) => p.id === id);
 
       listData[personListIndex] = convertPersonDetailsToPersonList(person);
 
-      queryClient.setQueryData(customerKeys.lists(), listData);
-      queryClient.setQueryData(customerKeys.detail(id), person);
+      setQueryData(queryClient, customerKeys.lists(), listData);
+      setQueryData(queryClient, customerKeys.detail(id), person);
 
       return {listData};
     },
     onError: (_, __, context) => {
-      queryClient.setQueryData(customerKeys.lists(), context?.listData || []);
+      setQueryData(queryClient, customerKeys.lists(), context?.listData || []);
     },
     onSettled: () => {
-      void queryClient.invalidateQueries({queryKey: customerKeys.lists()});
+      void queryClient.invalidateQueries({queryKey: customerKeys.lists().key});
     },
   });
 

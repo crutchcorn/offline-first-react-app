@@ -14,5 +14,10 @@ export const Layout = () => {
   return <div>
     {filteredMutations !== 0 && <p onClick={() => navigate("/sync")}>You have {filteredMutations} paused queries</p>}
     <Outlet/>
+    <div>
+      <button onClick={() => navigate(-1)}>Back</button>
+      <button onClick={() => navigate("/")}>List view</button>
+      <button onClick={() => navigate("/sync")}>Sync view</button>
+    </div>
   </div>
 }

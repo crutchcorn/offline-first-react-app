@@ -21,11 +21,6 @@ export const useUpdatePerson = (id: string) => {
 
       setQueryData(queryClient, customerKeys.lists(), listData);
       setQueryData(queryClient, customerKeys.detail(id), person);
-
-      return {listData};
-    },
-    onError: (_, __, context) => {
-      setQueryData(queryClient, customerKeys.lists(), context?.listData || []);
     },
     onSettled: () => {
       void queryClient.invalidateQueries({queryKey: customerKeys.lists().key});

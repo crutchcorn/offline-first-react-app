@@ -1,0 +1,31 @@
+import type {MutationKey, QueryClient} from "@tanstack/react-query";
+import type {Mutation} from "@tanstack/query-core";
+
+interface SanitizeMutationCacheProps {
+  queryClient: QueryClient;
+}
+
+/**
+ * Since we are dehydrating _all_ mutations, regardless of if there are other keys that are the same,
+ * we need to ensure that rehydrated mutations are only of the most recent mutation.
+ *
+ * TODO: Ideally at some point in the future we should clean up the cache during the dehydration check in App.tsx.
+ */
+export function sanitizeMutationCache({queryClient}: SanitizeMutationCacheProps) {
+  const mutationCache = queryClient.getMutationCache();
+  const mutations = mutationCache.getAll();
+  const mutationKeys = new Map<MutationKey, Mutation>();
+  for (const mutation of mutations) {
+    if (mutationKeys.has(mutation.options.mutationKey!)) {
+      // Check if the mutation is newer than the one we have stored
+      const existingMutation = mutationKeys.get(mutation.options.mutationKey!)!;
+      if (mutation.state.submittedAt > existingMutation.state.submittedAt) {
+        mutationKeys.set(mutation.options.mutationKey!, mutation);
+      } else {
+        mutationCache.remove(mutation);
+      }
+    } else {
+      mutationKeys.set(mutation.options.mutationKey!, mutation);
+    }
+  }
+}

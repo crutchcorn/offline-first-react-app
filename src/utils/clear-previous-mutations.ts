@@ -13,19 +13,18 @@ interface ClearMutationsProps {
  * - Makes it easier to show how many offline mutations are pending
  *
  * This shouldn't impact any mutations that are currently in flight
- * or are pending while online
  */
 export const clearPreviousMutations = ({mutationKey, queryClient}: ClearMutationsProps) => {
   const mutationCache = queryClient.getMutationCache();
-  const existingPausedMutations = mutationCache.findAll({mutationKey})
-    .filter(mutation => mutation.state.isPaused);
+  const existingMutations = mutationCache.findAll({mutationKey})
+    .filter(mutation => mutation.state.isPaused || mutation.state.status === "idle" || mutation.state.status === "error" || mutation.state.status === "success");
   // Mutate original list
-  existingPausedMutations.sort((mutA, mutB) => {
+  existingMutations.sort((mutA, mutB) => {
     return mutA.state.submittedAt - mutB.state.submittedAt;
   })
   // The most recent offline mutation should be persisted
-  existingPausedMutations.pop()
-  for (const mutation of existingPausedMutations) {
+  existingMutations.pop()
+  for (const mutation of existingMutations) {
     mutationCache.remove(mutation)
   }
 }

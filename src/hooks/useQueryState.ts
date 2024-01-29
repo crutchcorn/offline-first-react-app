@@ -1,5 +1,5 @@
 // This will eventually be a hook upstream in TanStack Query
-// Source: Me & TkDodo
+// @see https://github.com/TanStack/query/pull/6758
 import { notifyManager, replaceEqualDeep } from '@tanstack/query-core'
 import type {
   DefaultError,

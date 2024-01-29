@@ -1,6 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import { Field, Form } from "houseform";
-import { useUpdatePerson } from "../services/use-update-person";
+import { useUpdatePerson } from "../hooks/use-update-person.ts";
 import { useQuery } from "@tanstack/react-query";
 import {customerKeys, type GetKeyMeta} from "../constants/query-keys";
 import { getPerson } from "../services/person";

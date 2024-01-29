@@ -42,7 +42,7 @@ export const customerKeys = {
   details: () => ({
     key: [...customerKeys.all().key, "detail"] as const,
     meta: undefined as never as PersonDetailsInfo,
-    context: undefined as never as {status: "conflict" | "success", serverPersonData: PersonDetailsInfo}
+    context: undefined as never as { status: "conflict" | "success", serverPersonData: PersonDetailsInfo }
   }),
   detail: (id: string | number) => ({
     key: [...customerKeys.details().key, id] as const,
@@ -52,11 +52,22 @@ export const customerKeys = {
 
 expectKeyRecord(customerKeys);
 
+/**
+ * Using `ReturnType<T>[K] doesn't work because it doesn't handle the case where K is not a key of ReturnType<T>.
+ * When that happens, it will return `any` instead of `never`.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type RecordReturnType<T extends (...args: any[]) => any, P extends keyof ReturnType<T>> = P extends keyof ReturnType<T> ? ReturnType<T>[P] : never;
+
 export type GetKeyMeta<T extends KeyWithMetaFn<unknown, unknown>> =
-  ReturnType<T>['meta'];
+  RecordReturnType<T, "meta">;
 
 export type GetKeyContext<T extends KeyWithMetaFn<unknown, unknown>> =
-  ReturnType<T>['context'];
+  RecordReturnType<T, "context">;
+
+export type CustomerContexts = {
+  [K in keyof typeof customerKeys]: GetKeyContext<typeof customerKeys[K]>;
+}[keyof typeof customerKeys];
 
 export const setQueryData = <T extends KeyWithMeta<unknown, unknown>>(
   queryClient: QueryClient,

@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import {customerKeys, type GetKeyMeta, setQueryData} from "../constants/query-keys";
+import {customerKeys, type GetKeyMeta, setQueryData} from "../constants/query-keys.ts";
 import type { PersonListInfo } from "../types/api";
-import { getPeopleDatabaseList } from "./people.ts";
+import { getPeopleDatabaseList } from "../services/people.ts";
 import { convertPersonDetailsToPersonList } from "../utils/list.ts";
 
 const LAST_UPDATED_KEY = "last-updated";

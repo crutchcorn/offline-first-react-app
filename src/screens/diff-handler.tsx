@@ -1,11 +1,8 @@
-import { useAppDispatch, useAppSelector } from "../store/store";
-import { createPortal } from "react-dom";
 import { Field, Form } from "houseform";
-import { onlineManager, useQuery } from "@tanstack/react-query";
-import { getPerson } from "../services/person";
-import { Dialog } from "../components/dialog/dialog";
-import { useUpdatePerson } from "../services/use-update-person";
-import { clearTopItemOffDiff } from "../store/diff-slice";
+import { useQuery } from "@tanstack/react-query";
+import { getPerson } from "../services/person.ts";
+import { Dialog } from "../components/dialog/dialog.tsx";
+import { useUpdatePerson } from "../hooks/use-update-person.ts";
 import type {PersonDetailsInfo} from "../types/api";
 
 interface IndividualDiffHandler {
@@ -13,7 +10,8 @@ interface IndividualDiffHandler {
 	close: () => void;
 }
 
-const IndividialDiffHandler = ({ person, close }: IndividualDiffHandler) => {
+// TODO: Add link to this from the sync view
+export const IndividialDiffHandler = ({ person, close }: IndividualDiffHandler) => {
 	const { isLoading, data: serverPerson } = useQuery({
 		queryKey: ["serverperson", person.id],
 		queryFn: ({signal}) => {
@@ -35,7 +33,6 @@ const IndividialDiffHandler = ({ person, close }: IndividualDiffHandler) => {
 	}
 
 	return (
-		<Dialog>
 			<Form
 				onSubmit={(values: Omit<PersonDetailsInfo, "lastUpdated" | "id">) => {
 					updatePerson.mutate(
@@ -114,30 +111,5 @@ const IndividialDiffHandler = ({ person, close }: IndividualDiffHandler) => {
 					);
 				}}
 			</Form>
-		</Dialog>
-	);
-};
-
-export const DiffHandler = () => {
-	const isOnline = onlineManager.isOnline();
-	const updatesToDiff = useAppSelector((state) => state.diff.updatesToDiff);
-	const dispatch = useAppDispatch();
-
-	if (!updatesToDiff || updatesToDiff.length === 0) {
-		return null;
-	}
-
-	if (!isOnline) return null;
-
-	return createPortal(
-		<div>
-			<IndividialDiffHandler
-				person={updatesToDiff[0]!}
-				close={() => {
-					dispatch(clearTopItemOffDiff());
-				}}
-			/>
-		</div>,
-		document.querySelector("#portal-injection")!,
 	);
 };

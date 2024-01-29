@@ -1,7 +1,7 @@
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {customerKeys, getQueryData, setQueryData} from "../constants/query-keys";
+import {customerKeys, getQueryData, setQueryData} from "../constants/query-keys.ts";
 import type {PersonDetailsInfo} from "../types/api";
-import {convertPersonDetailsToPersonList} from "../utils/list";
+import {convertPersonDetailsToPersonList} from "../utils/list.ts";
 import {clearPreviousMutations} from "../utils/clear-previous-mutations.ts";
 
 export const useUpdatePerson = (id: string) => {

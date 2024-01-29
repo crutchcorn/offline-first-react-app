@@ -1,4 +1,4 @@
-import type {MutationKey, QueryClient} from "@tanstack/react-query";
+import type {QueryClient} from "@tanstack/react-query";
 import type {Mutation} from "@tanstack/query-core";
 import {stabilizeMutationKeys} from "./key-handling.ts";
 

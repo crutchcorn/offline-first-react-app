@@ -2,7 +2,7 @@ import { Link, useParams } from "react-router-dom";
 import { Field, Form } from "houseform";
 import { useUpdatePerson } from "../services/use-update-person";
 import { useQuery } from "@tanstack/react-query";
-import {customerKeys, type GetKeyReturn} from "../constants/query-keys";
+import {customerKeys, type GetKeyMeta} from "../constants/query-keys";
 import { getPerson } from "../services/person";
 import type { PersonDetailsInfo } from "../types/api";
 
@@ -10,7 +10,7 @@ export const PersonDetail = () => {
 	const { id } = useParams();
 	const { data: person, isLoading } = useQuery({
 		queryKey: customerKeys.detail(id!).key,
-		queryFn: async ({ signal }): Promise<GetKeyReturn<typeof customerKeys.detail>> => {
+		queryFn: async ({ signal }): Promise<GetKeyMeta<typeof customerKeys.detail>> => {
 			return getPerson({ id: id!, signal });
 		},
 		enabled: !!id,

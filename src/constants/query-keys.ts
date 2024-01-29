@@ -1,14 +1,15 @@
 import type {PersonDetailsInfo, PersonListInfo} from "../types/api";
 import type {QueryClient} from "@tanstack/react-query";
 
-interface KeyWithMeta<T> {
+interface KeyWithMeta<TMeta, TContext> {
   key: readonly unknown[];
-  meta?: T;
+  meta?: TMeta;
+  context?: TContext;
 }
 
-type KeyWithMetaFn<T> = (...props: never[]) => KeyWithMeta<T>
+type KeyWithMetaFn<TMeta, TContext> = (...props: never[]) => KeyWithMeta<TMeta, TContext>
 
-type KeyRecord = Record<string, KeyWithMetaFn<unknown>>;
+type KeyRecord = Record<string, KeyWithMetaFn<unknown, unknown>>;
 
 // We can't use `satisfies` here because it doesn't play well with circular constant usage
 function expectKeyRecord<T extends KeyRecord>(props: T): T {
@@ -40,7 +41,8 @@ export const customerKeys = {
   }),
   details: () => ({
     key: [...customerKeys.all().key, "detail"] as const,
-    meta: undefined as never as PersonDetailsInfo
+    meta: undefined as never as PersonDetailsInfo,
+    context: undefined as never as {status: "conflict" | "success", serverPersonData: PersonDetailsInfo}
   }),
   detail: (id: string | number) => ({
     key: [...customerKeys.details().key, id] as const,
@@ -50,10 +52,13 @@ export const customerKeys = {
 
 expectKeyRecord(customerKeys);
 
-export type GetKeyReturn<T extends KeyWithMetaFn<unknown>> =
+export type GetKeyMeta<T extends KeyWithMetaFn<unknown, unknown>> =
   ReturnType<T>['meta'];
 
-export const setQueryData = <T extends KeyWithMeta<unknown>>(
+export type GetKeyContext<T extends KeyWithMetaFn<unknown, unknown>> =
+  ReturnType<T>['context'];
+
+export const setQueryData = <T extends KeyWithMeta<unknown, unknown>>(
   queryClient: QueryClient,
   keyWithMeta: T,
   data: T['meta']
@@ -61,7 +66,7 @@ export const setQueryData = <T extends KeyWithMeta<unknown>>(
   queryClient.setQueryData(keyWithMeta.key, data);
 }
 
-export const getQueryData = <T extends KeyWithMeta<unknown>>(
+export const getQueryData = <T extends KeyWithMeta<unknown, unknown>>(
   queryClient: QueryClient,
   keyWithMeta: T
 ): T['meta'] => {

@@ -62,7 +62,3 @@ This app uses the following technologies:
 - [React Query](https://react-query.tanstack.com/) to handle data fetching
 - [HouseForm](https://houseform.dev) to build forms
 - [React Router](https://reactrouter.com/) to handle routing
-- [Redux](https://redux.js.org/) to manage diffing of state data
-- [Redux Toolkit](https://redux-toolkit.js.org/) to simplify Redux usage
-- [Redux Persist](https://github.com/rt2zz/redux-persist) to persist Redux state to local storage
-

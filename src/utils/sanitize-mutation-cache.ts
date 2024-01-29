@@ -1,15 +1,9 @@
 import type {MutationKey, QueryClient} from "@tanstack/react-query";
 import type {Mutation} from "@tanstack/query-core";
+import {stabilizeMutationKeys} from "./key-handling.ts";
 
 interface SanitizeMutationCacheProps {
   queryClient: QueryClient;
-}
-
-/**
- * A map is reference sensitive, so we need to stabilize the mutation key away from being a referentially unstable array.
- */
-function stabilizeMutationKeys(mutationKey: MutationKey): string {
-  return mutationKey.join(",");
 }
 
 /**

@@ -18,7 +18,19 @@ export const Sync = () => {
 
   const sortedMutations = useMemo(() => {
     return [...allMutations].sort((a, b) => {
-      return b.state.submittedAt - a.state.submittedAt;
+      const baseSort = b.state.submittedAt > a.state.submittedAt ? 1 : -1
+      const aContext = (a.state.context as {status: "conflict"} | undefined)?.status;
+      const bContext = (b.state.context as {status: "conflict"} | undefined)?.status;
+      if (aContext && bContext === "conflict") {
+        return baseSort
+      }
+      if (aContext === "conflict") {
+        return -1
+      }
+      if (bContext === "conflict") {
+        return 1
+      }
+      return baseSort
     })
   }, [allMutations])
 

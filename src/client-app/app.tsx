@@ -82,7 +82,6 @@ export const App = () => {
             }
           }}
           onSuccess={() => {
-            // TODO: This isn't preventing dupes in sync screen
             sanitizeMutationCache({queryClient});
             // resume mutations after initial restore from localStorage was successful
             void queryClient.resumePausedMutations().then(() => {

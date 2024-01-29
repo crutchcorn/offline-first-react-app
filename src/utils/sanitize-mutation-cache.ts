@@ -6,6 +6,13 @@ interface SanitizeMutationCacheProps {
 }
 
 /**
+ * A map is reference sensitive, so we need to stabilize the mutation key away from being a referentially unstable array.
+ */
+function stabilizeMutationKeys(mutationKey: MutationKey): string {
+  return mutationKey.join(",");
+}
+
+/**
  * Since we are dehydrating _all_ mutations, regardless of if there are other keys that are the same,
  * we need to ensure that rehydrated mutations are only of the most recent mutation.
  *
@@ -14,18 +21,20 @@ interface SanitizeMutationCacheProps {
 export function sanitizeMutationCache({queryClient}: SanitizeMutationCacheProps) {
   const mutationCache = queryClient.getMutationCache();
   const mutations = mutationCache.getAll();
-  const mutationKeys = new Map<MutationKey, Mutation>();
+  const mutationKeys = new Map<string, Mutation>();
   for (const mutation of mutations) {
-    if (mutationKeys.has(mutation.options.mutationKey!)) {
+    const stableMutationKey = stabilizeMutationKeys(mutation.options.mutationKey!);
+    if (mutationKeys.has(stableMutationKey)) {
       // Check if the mutation is newer than the one we have stored
-      const existingMutation = mutationKeys.get(mutation.options.mutationKey!)!;
+      const existingMutation = mutationKeys.get(stableMutationKey)!;
       if (mutation.state.submittedAt > existingMutation.state.submittedAt) {
-        mutationKeys.set(mutation.options.mutationKey!, mutation);
+        mutationKeys.set(stableMutationKey, mutation);
       } else {
+        console.log("REMOVING")
         mutationCache.remove(mutation);
       }
     } else {
-      mutationKeys.set(mutation.options.mutationKey!, mutation);
+      mutationKeys.set(stableMutationKey, mutation);
     }
   }
 }

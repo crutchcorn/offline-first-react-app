@@ -1,13 +1,16 @@
-import type {FC, PropsWithChildren} from "react";
+import type { FC, PropsWithChildren } from "react";
 
 interface RouteProtectionProps {
-	conditionalComponent: FC
+	conditionalComponent: FC;
 }
 
-export function RouteProtection({conditionalComponent: Display, children}: PropsWithChildren<RouteProtectionProps>) {
-	const el = Display({})
+export function RouteProtection({
+	conditionalComponent: Display,
+	children,
+}: PropsWithChildren<RouteProtectionProps>) {
+	const el = Display({});
 	if (el) {
-		return <>{el}</>
+		return <>{el}</>;
 	}
 	return <>{children}</>;
 }

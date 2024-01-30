@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useListPerson } from "../hooks/use-list-person.ts";
-import {useState} from "react";
+import { useState } from "react";
 
 export const PeopleList = () => {
 	const { data: people, isLoading } = useListPerson();
@@ -26,8 +26,18 @@ export const PeopleList = () => {
 					</li>
 				))}
 			</ul>
-			<button disabled={isMinPage} onClick={() => setPage(isMinPage ? 0 : page - 1)}>Previous page</button>
-			<button disabled={isMaxPage} onClick={() => setPage(isMaxPage ? page : page + 1)}>Next</button>
+			<button
+				disabled={isMinPage}
+				onClick={() => setPage(isMinPage ? 0 : page - 1)}
+			>
+				Previous page
+			</button>
+			<button
+				disabled={isMaxPage}
+				onClick={() => setPage(isMaxPage ? page : page + 1)}
+			>
+				Next
+			</button>
 		</div>
 	);
 };

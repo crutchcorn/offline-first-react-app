@@ -16,7 +16,7 @@ export function getDefaultMutations(queryClient: QueryClient) {
       await queryClient.cancelQueries({
         queryKey: customerKeys.detail(person.id).key,
       });
-      const {status} = mutationMap.get(stabilizeMutationKeys(customerKeys.detail(person.id).key)) as GetKeyContext<typeof customerKeys.details>;
+      const {status} = mutationMap.get(stabilizeMutationKeys(customerKeys.detail(person.id).key)) as GetKeyContext<typeof customerKeys.details> | undefined ?? {};
 
       if (status === "conflict") {
         throw new Error("Person has been updated on the server since you last fetched it");

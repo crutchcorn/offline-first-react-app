@@ -7,6 +7,7 @@ import { getPerson } from "../services/person";
 import type { PersonDetailsInfo } from "../types/api";
 import {useMemo} from "react";
 import {mutationHasConflicts} from "../utils/mutations-utils.ts";
+import {stringify} from "superjson";
 
 export const PersonDetail = () => {
 	const { id } = useParams();
@@ -26,7 +27,7 @@ export const PersonDetail = () => {
 		return mutations.some(mutationState => !!mutationHasConflicts(mutationState))
 	}, [mutations])
 
-	const { updatePerson } = useUpdatePerson(id || "");
+	const { mutate: updatePerson, error } = useUpdatePerson(id || "");
 
 	if (isLoading) return <div>Loading...</div>;
 
@@ -34,7 +35,7 @@ export const PersonDetail = () => {
 		<Form
 			onSubmit={(values: Omit<PersonDetailsInfo, "id" | "lastUpdated">) => {
 				if (isLocked) return;
-				updatePerson.mutate({
+				updatePerson({
 					...(person ?? { id: id! }),
 					...values,
 					lastUpdated: new Date(),
@@ -43,6 +44,7 @@ export const PersonDetail = () => {
 		>
 			{({ submit }) => (
 				<div>
+					{error ? <p>There was an error: {stringify(error)}</p> : null}
           {isLocked && <div style={{background: "yellow", padding: "1rem"}}>
               <p style={{margin: 0}}>This person is locked, please see the sync screen for more details</p>
               <Link to={"/sync"}>Go to sync</Link>

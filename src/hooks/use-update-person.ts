@@ -6,7 +6,7 @@ import {clearPreviousMutations} from "../utils/clear-previous-mutations.ts";
 
 export const useUpdatePerson = (id: string) => {
   const queryClient = useQueryClient();
-  const updatePerson = useMutation({
+  return useMutation({
     mutationKey: customerKeys.detail(id).key,
     // eslint-disable-next-line @typescript-eslint/require-await
     onMutate: async (person: PersonDetailsInfo) => {
@@ -26,6 +26,4 @@ export const useUpdatePerson = (id: string) => {
       void queryClient.invalidateQueries({queryKey: customerKeys.lists().key});
     },
   });
-
-  return {updatePerson};
 };

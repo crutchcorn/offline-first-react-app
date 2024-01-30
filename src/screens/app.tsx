@@ -13,9 +13,13 @@ import {Layout} from "../components/layout.tsx";
 import {Sync} from "./sync.tsx";
 import {sanitizeMutationCache} from "../utils/sanitize-mutation-cache.ts";
 import {getDefaultMutations} from "../constants/default-mutations.ts";
+import {useEffectOnce} from "../hooks/useEffectOnce.ts";
+import {parse, stringify} from "superjson";
 
 const persister = createSyncStoragePersister({
   storage: window.localStorage,
+  serialize: client => stringify(client),
+  deserialize: cachedString => parse(cachedString)
 });
 
 const queryClient = new QueryClient({
@@ -59,31 +63,34 @@ const AppBase = () => {
 };
 
 export const App = () => {
+  useEffectOnce(() => {
+    sanitizeMutationCache({queryClient});
+  })
+
   return (
-        <PersistQueryClientProvider
-          client={queryClient}
-          persistOptions={{
-            persister,
-						dehydrateOptions: {
-              // This is what allows us to see successful mutations in the sync page
-              // Just keep in mind that once a mutation's gcTime has passed, it will be removed from localStorage
-              // eslint-disable-next-line @typescript-eslint/no-unused-vars
-              shouldDehydrateMutation: _mutation => {
-                return true;
-              }
-            }
-          }}
-          onSuccess={() => {
-            sanitizeMutationCache({queryClient});
-            // resume mutations after initial restore from localStorage was successful
-            void queryClient.resumePausedMutations().then(() => {
-              return queryClient.invalidateQueries();
-            });
-          }}
-        >
-          <BrowserRouter>
-            <AppBase/>
-          </BrowserRouter>
-        </PersistQueryClientProvider>
+    <PersistQueryClientProvider
+      client={queryClient}
+      persistOptions={{
+        persister,
+        dehydrateOptions: {
+          // This is what allows us to see successful mutations in the sync page
+          // Just keep in mind that once a mutation's gcTime has passed, it will be removed from localStorage
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          shouldDehydrateMutation: _mutation => {
+            return true;
+          }
+        }
+      }}
+      onSuccess={() => {
+        // resume mutations after initial restore from localStorage was successful
+        void queryClient.resumePausedMutations().then(() => {
+          return queryClient.invalidateQueries();
+        });
+      }}
+    >
+      <BrowserRouter>
+        <AppBase/>
+      </BrowserRouter>
+    </PersistQueryClientProvider>
   );
 };

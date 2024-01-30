@@ -45,15 +45,8 @@ export const initialDownloadKeys = {
   all: () => ({
     key: ["initialDownload"] as const,
     data: undefined as never as void,
-    transformDataToKey: (_data: unknown) => {
-      const err = getInsufficientTranformDataToKeyErrorStr({
-        dataType: "void",
-        keyFnName: "all",
-        keyRecordName: "initialDownloadKeys",
-        data: _data
-      })
-      console.warn(err);
-      return undefined;
+    transformDataToKey: () => {
+      return initialDownloadKeys.all().key
     },
     type: "" as const
   }),
@@ -80,30 +73,16 @@ export const customerKeys = {
   all: () => ({
     key: ["customers"] as const,
     data: undefined as never as void,
-    transformDataToKey: (_data: unknown) => {
-      const err = getInsufficientTranformDataToKeyErrorStr({
-        dataType: "void",
-        keyFnName: "all",
-        keyRecordName: "customerKeys",
-        data: _data
-      })
-      console.warn(err);
-      return undefined
+    transformDataToKey: () => {
+      return customerKeys.all().key
     },
     type: "person" as const
   }),
   lists: () => ({
     key: [...customerKeys.all().key, "list"] as const,
     data: undefined as never as PersonListInfo[],
-    transformDataToKey: (_data: unknown) => {
-      const err = getInsufficientTranformDataToKeyErrorStr({
-        dataType: "PersonListInfo[]",
-        keyFnName: "lists",
-        keyRecordName: "customerKeys",
-        data: _data
-      })
-      console.warn(err);
-      return undefined
+    transformDataToKey: () => {
+      return customerKeys.lists().key
     },
     type: "person" as const
   }),

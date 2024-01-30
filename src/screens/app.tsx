@@ -7,13 +7,12 @@ import {
   PersistQueryClientProvider,
   persistQueryClientRestore,
 } from "@tanstack/react-query-persist-client";
-import {getDefaultMutations} from "../default-mutations";
-import {DiffHandler} from "./diff-handler.tsx";
 import {useInitialDownload} from "../components/initial-download.tsx";
 import {RouteProtection} from "../components/route-protection.tsx";
 import {Layout} from "../components/layout.tsx";
 import {Sync} from "./sync.tsx";
 import {sanitizeMutationCache} from "../utils/sanitize-mutation-cache.ts";
+import {getDefaultMutations} from "../constants/default-mutations.ts";
 
 const persister = createSyncStoragePersister({
   storage: window.localStorage,
@@ -54,7 +53,6 @@ const AppBase = () => {
             <Route path="/sync" element={<Sync/>}/>
           </Route>
         </Routes>
-        <DiffHandler/>
       </RouteProtection>
     </>
   );

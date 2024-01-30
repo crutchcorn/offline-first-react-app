@@ -1,5 +1,5 @@
 import type {PersonDetailsInfo, PersonListInfo} from "../types/api";
-import type {QueryClient, QueryObserverOptions} from "@tanstack/react-query";
+import type {QueryClient} from "@tanstack/react-query";
 
 interface KeyWithMeta<TData, TContext, TMeta> {
   key: readonly unknown[];
@@ -47,8 +47,7 @@ export const customerKeys = {
   }),
   detail: (id: string | number) => ({
     key: [...customerKeys.details().key, id] as const,
-    data: undefined as never as PersonDetailsInfo,
-    meta: undefined as never as { status: "conflict" | "no-conflict" }
+    data: undefined as never as PersonDetailsInfo
   }),
 };
 
@@ -84,19 +83,4 @@ export const getQueryData = <T extends KeyWithMeta<unknown, unknown, unknown>>(
   keyWithMeta: T
 ): T['data'] => {
   return queryClient.getQueryData(keyWithMeta.key)
-}
-
-export const setQueryMeta = <T extends KeyWithMeta<unknown, unknown, unknown>>(
-  queryClient: QueryClient,
-  keyWithMeta: T,
-  meta: T['meta']
-) => {
-  queryClient.setQueryDefaults(keyWithMeta.key, {meta: meta as never});
-}
-
-export const getQueryMeta = <T extends KeyWithMeta<unknown, unknown, unknown>>(
-  queryClient: QueryClient,
-  keyWithMeta: T
-): QueryObserverOptions & {meta: T['meta']} => {
-  return queryClient.getQueryDefaults(keyWithMeta.key) as never
 }

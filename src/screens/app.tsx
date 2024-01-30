@@ -7,14 +7,15 @@ import {
 	PersistQueryClientProvider,
 	persistQueryClientRestore,
 } from "@tanstack/react-query-persist-client";
-import { useInitialDownload } from "../components/initial-download.tsx";
-import { RouteProtection } from "../components/route-protection.tsx";
-import { Layout } from "../components/layout.tsx";
-import { Sync } from "./sync.tsx";
-import { sanitizeMutationCache } from "../utils/sanitize-mutation-cache.ts";
-import { getDefaultMutations } from "../constants/default-mutations.ts";
+import { useInitialDownload } from "../components/initial-download";
+import { RouteProtection } from "../components/route-protection";
+import { Layout } from "../components/layout";
+import { Sync } from "./sync";
+import { sanitizeMutationCache } from "../utils/sanitize-mutation-cache";
+import { getDefaultMutations } from "../constants/default-mutations";
 import { parse, stringify } from "superjson";
 import { useRef } from "react";
+import { SyncDetails } from "./sync-details";
 
 const persister = createSyncStoragePersister({
 	storage: window.localStorage,
@@ -55,6 +56,7 @@ const AppBase = () => {
 						<Route path="/" index element={<PeopleList />} />
 						<Route path="/detail/:id" element={<PersonDetail />} />
 						<Route path="/sync" element={<Sync />} />
+						<Route path="/sync-details/:id" element={<SyncDetails />} />
 					</Route>
 				</Routes>
 			</RouteProtection>

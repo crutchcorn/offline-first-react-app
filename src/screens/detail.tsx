@@ -1,12 +1,12 @@
 import { Link, useParams } from "react-router-dom";
 import { Field, Form } from "houseform";
-import { useUpdatePerson } from "../hooks/use-update-person.ts";
+import { useUpdatePerson } from "../hooks/use-update-person";
 import { useMutationState, useQuery } from "@tanstack/react-query";
 import { customerKeys, type GetKeyData } from "../constants/query-keys";
 import { getPerson } from "../services/person";
 import type { PersonDetailsInfo } from "../types/api";
 import { useMemo } from "react";
-import { mutationHasConflicts } from "../utils/mutations-utils.ts";
+import { mutationHasConflicts } from "../utils/mutations-utils";
 import { stringify } from "superjson";
 
 export const PersonDetail = () => {

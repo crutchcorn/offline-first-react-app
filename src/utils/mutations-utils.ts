@@ -1,5 +1,5 @@
 import type { MutationState } from "@tanstack/query-core";
-import type { KeyRecordContexts } from "../constants/query-keys.ts";
+import type { KeyRecordContexts } from "../constants/query-keys";
 
 export const mutationHasConflicts = (
 	mutationState: MutationState<unknown, Error, unknown, unknown>,

@@ -3,10 +3,10 @@ import {
 	customerKeys,
 	getQueryData,
 	setQueryData,
-} from "../constants/query-keys.ts";
+} from "../constants/query-keys";
 import type { PersonDetailsInfo } from "../types/api";
-import { convertPersonDetailsToPersonList } from "../utils/list.ts";
-import { clearPreviousMutations } from "../utils/clear-previous-mutations.ts";
+import { convertPersonDetailsToPersonList } from "../utils/list";
+import { clearPreviousMutations } from "../utils/clear-previous-mutations";
 
 export const useUpdatePerson = (id: string) => {
 	const queryClient = useQueryClient();

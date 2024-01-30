@@ -3,12 +3,12 @@ import {
 	customerKeys,
 	type GetKeyContext,
 	type GetKeyData,
-} from "./query-keys.ts";
+} from "./query-keys";
 import type { PersonDetailsInfo } from "../types/api";
-import { getPerson } from "../services/person.ts";
-import { updatePerson } from "../services/people.ts";
-import { clearPreviousMutations } from "../utils/clear-previous-mutations.ts";
-import { stabilizeMutationKeys } from "../utils/key-handling.ts";
+import { getPerson } from "../services/person";
+import { updatePerson } from "../services/people";
+import { clearPreviousMutations } from "../utils/clear-previous-mutations";
+import { stabilizeMutationKeys } from "../utils/key-handling";
 
 // Any mutation that might be paused needs to live here, as there is no way to "resume"
 // a mutation or query that isn't a default

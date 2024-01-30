@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useListPerson } from "../hooks/use-list-person.ts";
+import { useListPerson } from "../hooks/use-list-person";
 import { useState } from "react";
 
 export const PeopleList = () => {

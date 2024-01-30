@@ -24,7 +24,7 @@ import {
 import { convertPersonDetailsToPersonList } from "../utils/list";
 import { chunkForEach } from "../utils/chunk-for-each";
 import type { PersonListInfo } from "../types/api";
-import { storeLastUpdated } from "../hooks/use-list-person.ts";
+import { storeLastUpdated } from "../hooks/use-list-person";
 
 type InitialLoadedMetaStatus =
 	| "UNFINISHED"

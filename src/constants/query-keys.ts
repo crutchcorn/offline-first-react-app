@@ -1,7 +1,7 @@
 import type { PersonDetailsInfo, PersonListInfo } from "../types/api";
 import type { QueryClient } from "@tanstack/react-query";
 import { stringify } from "superjson";
-import { stabilizeMutationKeys } from "../utils/key-handling.ts";
+import { stabilizeMutationKeys } from "../utils/key-handling";
 
 interface KeyWithMeta<TData, TContext> {
 	// The unique key for a query and/or mutation

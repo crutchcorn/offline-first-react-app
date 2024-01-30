@@ -1,6 +1,6 @@
 // Seed the list if it doesn't exist
 import fs from "fs";
-import { apiListPath } from "../src/constants/api.ts";
+import { apiListPath } from "../src/constants/api";
 import { v4 as uuidV4 } from "uuid";
 import { faker } from "@faker-js/faker";
 import { stringify } from "superjson";

@@ -1,6 +1,6 @@
 import { useMutationState } from "../hooks/useMutationState";
 import { useMemo } from "react";
-import { mutationHasConflicts } from "../utils/mutations-utils.ts";
+import { mutationHasConflicts } from "../utils/mutations-utils";
 import type { Mutation } from "@tanstack/query-core";
 import {
 	type customerKeys,
@@ -8,7 +8,7 @@ import {
 	type GetKeyData,
 	getKeyRecordFromKey,
 	initialDownloadKeys,
-} from "../constants/query-keys.ts";
+} from "../constants/query-keys";
 import { stringify } from "superjson";
 
 /**

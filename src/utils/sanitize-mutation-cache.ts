@@ -1,6 +1,6 @@
 import type { QueryClient } from "@tanstack/react-query";
 import type { Mutation } from "@tanstack/query-core";
-import { stabilizeMutationKeys } from "./key-handling.ts";
+import { stabilizeMutationKeys } from "./key-handling";
 
 interface SanitizeMutationCacheProps {
 	queryClient: QueryClient;

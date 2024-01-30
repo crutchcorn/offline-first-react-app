@@ -1,20 +1,17 @@
 import { Field, Form } from "houseform";
 import { useQuery } from "@tanstack/react-query";
-import { getPerson } from "../services/person.ts";
-import { Dialog } from "../components/dialog/dialog.tsx";
-import { useUpdatePerson } from "../hooks/use-update-person.ts";
+import { getPerson } from "../services/person";
+import { Dialog } from "../components/dialog/dialog";
+import { useUpdatePerson } from "../hooks/use-update-person";
 import type { PersonDetailsInfo } from "../types/api";
 
-interface IndividualDiffHandler {
+interface DiffHandlerProps {
 	person: PersonDetailsInfo;
-	close: () => void;
 }
 
-// TODO: Add link to this from the sync view
-export const IndividialDiffHandler = ({
+export const DiffHandler = ({
 	person,
-	close,
-}: IndividualDiffHandler) => {
+}: DiffHandlerProps) => {
 	const { isLoading, data: serverPerson } = useQuery({
 		queryKey: ["serverperson", person.id],
 		queryFn: ({ signal }) => {
@@ -116,3 +113,7 @@ export const IndividialDiffHandler = ({
 		</Form>
 	);
 };
+
+export const SyncDetails = () => {
+
+}

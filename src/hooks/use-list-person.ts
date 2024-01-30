@@ -3,10 +3,10 @@ import {
 	customerKeys,
 	type GetKeyData,
 	setQueryData,
-} from "../constants/query-keys.ts";
+} from "../constants/query-keys";
 import type { PersonListInfo } from "../types/api";
-import { getPeopleDatabaseList } from "../services/people.ts";
-import { convertPersonDetailsToPersonList } from "../utils/list.ts";
+import { getPeopleDatabaseList } from "../services/people";
+import { convertPersonDetailsToPersonList } from "../utils/list";
 
 const LAST_UPDATED_KEY = "last-updated";
 

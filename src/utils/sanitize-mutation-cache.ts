@@ -24,7 +24,6 @@ export function sanitizeMutationCache({queryClient}: SanitizeMutationCacheProps)
       if (mutation.state.submittedAt > existingMutation.state.submittedAt) {
         mutationKeys.set(stableMutationKey, mutation);
       } else {
-        console.log("REMOVING")
         mutationCache.remove(mutation);
       }
     } else {

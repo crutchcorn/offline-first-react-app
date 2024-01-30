@@ -13,8 +13,8 @@ import {Layout} from "../components/layout.tsx";
 import {Sync} from "./sync.tsx";
 import {sanitizeMutationCache} from "../utils/sanitize-mutation-cache.ts";
 import {getDefaultMutations} from "../constants/default-mutations.ts";
-import {useEffectOnce} from "../hooks/useEffectOnce.ts";
 import {parse, stringify} from "superjson";
+import {useRef} from "react";
 
 const persister = createSyncStoragePersister({
   storage: window.localStorage,
@@ -63,10 +63,7 @@ const AppBase = () => {
 };
 
 export const App = () => {
-  useEffectOnce(() => {
-    sanitizeMutationCache({queryClient});
-  })
-
+  const initiallyHydrated = useRef(false);
   return (
     <PersistQueryClientProvider
       client={queryClient}
@@ -82,6 +79,12 @@ export const App = () => {
         }
       }}
       onSuccess={() => {
+        // This can't be moved to a useEffect (or useEffectOnce) because it may (and often does) run before
+        // the hydration finishes
+        if (!initiallyHydrated.current) {
+          sanitizeMutationCache({queryClient});
+          initiallyHydrated.current = true;
+        }
         // resume mutations after initial restore from localStorage was successful
         void queryClient.resumePausedMutations().then(() => {
           return queryClient.invalidateQueries();

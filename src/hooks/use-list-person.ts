@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import {customerKeys, type GetKeyMeta, setQueryData} from "../constants/query-keys.ts";
+import {customerKeys, type GetKeyData, setQueryData} from "../constants/query-keys.ts";
 import type { PersonListInfo } from "../types/api";
 import { getPeopleDatabaseList } from "../services/people.ts";
 import { convertPersonDetailsToPersonList } from "../utils/list.ts";
@@ -22,7 +22,7 @@ export const useListPerson = () => {
 
 	return useQuery({
 		queryKey: customerKeys.lists().key,
-		queryFn: async ({ signal }): Promise<GetKeyMeta<typeof customerKeys.lists>> => {
+		queryFn: async ({ signal }): Promise<GetKeyData<typeof customerKeys.lists>> => {
 			const prevCachedData =
 				queryClient.getQueryData<PersonListInfo[]>(customerKeys.lists().key) ||
 				([] as PersonListInfo[]);

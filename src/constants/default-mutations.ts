@@ -1,8 +1,8 @@
 import type {QueryClient} from "@tanstack/react-query";
-import {customerKeys, type GetKeyContext, type GetKeyMeta} from "../constants/query-keys";
+import {customerKeys, type GetKeyContext, type GetKeyData, setQueryMeta} from "./query-keys.ts";
 import type {PersonDetailsInfo} from "../types/api";
-import {getPerson} from "../services/person";
-import {updatePerson} from "../services/people";
+import {getPerson} from "../services/person.ts";
+import {updatePerson} from "../services/people.ts";
 import {clearPreviousMutations} from "../utils/clear-previous-mutations.ts";
 import {stabilizeMutationKeys} from "../utils/key-handling.ts";
 
@@ -11,17 +11,25 @@ import {stabilizeMutationKeys} from "../utils/key-handling.ts";
 export function getDefaultMutations(queryClient: QueryClient) {
   // Temporary: @see https://github.com/TanStack/query/discussions/6790
   const mutationMap = new Map<string, unknown>();
-
   queryClient.setMutationDefaults(customerKeys.details().key, {
-    mutationFn: async (person: PersonDetailsInfo): Promise<GetKeyMeta<typeof customerKeys.details>> => {
+    mutationFn: async (person: PersonDetailsInfo): Promise<GetKeyData<typeof customerKeys.details>> => {
       await queryClient.cancelQueries({
         queryKey: customerKeys.detail(person.id).key,
       });
       const {status} = mutationMap.get(stabilizeMutationKeys(customerKeys.detail(person.id).key)) as GetKeyContext<typeof customerKeys.details>;
 
       if (status === "conflict") {
+        setQueryMeta(queryClient, customerKeys.detail(person.id), {
+          status: "conflict"
+        })
         throw new Error("Person has been updated on the server since you last fetched it");
       }
+
+      setQueryMeta(queryClient, customerKeys.detail(person.id),
+        {
+          status: "no-conflict"
+        }
+      )
 
       return updatePerson({person});
     },

@@ -1,13 +1,16 @@
 import type {PersonDetailsInfo, PersonListInfo} from "../types/api";
 import type {QueryClient} from "@tanstack/react-query";
+import {stringify} from "superjson";
+import {stabilizeMutationKeys} from "../utils/key-handling.ts";
 
 interface KeyWithMeta<TData, TContext> {
   // The unique key for a query and/or mutation
   key: readonly unknown[];
   // The return type of a query's `queryFn` function
   data?: TData;
+  transformDataToKey?: (data: TData) => undefined | readonly unknown[];
   // A unique enum for each type of data type
-  type: string;
+  type: "person" | "";
   // The return type of a mutation's `onMutation` function (TanStack Query context)
   context?: TContext;
 }
@@ -21,17 +24,53 @@ function expectKeyRecord<T extends KeyRecord>(props: T): T {
   return props;
 }
 
+interface GetInsufficientTranformDataToKeyErrorStrProps {
+  dataType: string;
+  data: unknown;
+  keyRecordName: string;
+  keyFnName: string;
+}
+
+function getInsufficientTranformDataToKeyErrorStr({
+                                                    dataType,
+                                                    data,
+                                                    keyRecordName,
+                                                    keyFnName
+                                                  }: GetInsufficientTranformDataToKeyErrorStrProps) {
+  return `We don't have enough information to transform ${stringify(data)} (${dataType}) as an id string for ${keyRecordName}.${keyFnName}().transformDataToKey`
+}
+
 // DO NOT CLEAR THIS CACHE OTHERWISE IT WILL CAUSE AN INFINITE LOOP ON THE INITIAL DOWNLOAD SCREEN
 export const initialDownloadKeys = {
   all: () => ({
     key: ["initialDownload"] as const,
     data: undefined as never as void,
-    type: ""
+    transformDataToKey: (_data: unknown) => {
+      const err = getInsufficientTranformDataToKeyErrorStr({
+        dataType: "void",
+        keyFnName: "all",
+        keyRecordName: "initialDownloadKeys",
+        data: _data
+      })
+      console.warn(err);
+      return undefined;
+    },
+    type: "" as const
   }),
   status: (status: string) => ({
     key: [...initialDownloadKeys.all().key, status] as const,
     data: undefined as never as boolean,
-    type: ""
+    transformDataToKey: (_data: unknown) => {
+      const err = getInsufficientTranformDataToKeyErrorStr({
+        dataType: "boolean",
+        keyFnName: "status",
+        keyRecordName: "initialDownloadKeys",
+        data: _data
+      })
+      console.warn(err);
+      return undefined;
+    },
+    type: "" as const
   }),
 };
 
@@ -41,23 +80,51 @@ export const customerKeys = {
   all: () => ({
     key: ["customers"] as const,
     data: undefined as never as void,
-    type: "person"
+    transformDataToKey: (_data: unknown) => {
+      const err = getInsufficientTranformDataToKeyErrorStr({
+        dataType: "void",
+        keyFnName: "all",
+        keyRecordName: "customerKeys",
+        data: _data
+      })
+      console.warn(err);
+      return undefined
+    },
+    type: "person" as const
   }),
   lists: () => ({
     key: [...customerKeys.all().key, "list"] as const,
     data: undefined as never as PersonListInfo[],
-    type: "person"
+    transformDataToKey: (_data: unknown) => {
+      const err = getInsufficientTranformDataToKeyErrorStr({
+        dataType: "PersonListInfo[]",
+        keyFnName: "lists",
+        keyRecordName: "customerKeys",
+        data: _data
+      })
+      console.warn(err);
+      return undefined
+    },
+    type: "person" as const
   }),
   details: () => ({
     key: [...customerKeys.all().key, "detail"] as const,
     data: undefined as never as PersonDetailsInfo,
+    transformDataToKey: (_data: unknown) => {
+      const data = _data as GetKeyData<typeof customerKeys.details>;
+      return customerKeys.detail(data.id).key
+    },
     context: undefined as never as { status: "conflict" | "success", serverPersonData: PersonDetailsInfo },
-    type: "person"
+    type: "person" as const
   }),
   detail: (id: string | number) => ({
     key: [...customerKeys.details().key, id] as const,
     data: undefined as never as PersonDetailsInfo,
-    type: "person"
+    transformDataToKey: (_data: unknown) => {
+      const data = _data as GetKeyData<typeof customerKeys.detail>;
+      return customerKeys.detail(data.id).key
+    },
+    type: "person" as const
   }),
 };
 
@@ -76,9 +143,38 @@ export type GetKeyData<T extends KeyWithMetaFn<unknown, unknown>> =
 export type GetKeyContext<T extends KeyWithMetaFn<unknown, unknown>> =
   RecordReturnType<T, "context">;
 
-export type CustomerContexts = {
-  [K in keyof typeof customerKeys]: GetKeyContext<typeof customerKeys[K]>;
-}[keyof typeof customerKeys];
+type GetKeyRecordContext<T extends KeyRecord> = Omit<{
+  [K in keyof T]: GetKeyContext<T[K]>;
+}[keyof T], never>;
+
+export type KeyRecordContexts =
+  GetKeyRecordContext<typeof initialDownloadKeys>
+  | GetKeyRecordContext<typeof customerKeys>;
+
+export function getKeyRecordFromKey(inputKeyMeta: readonly unknown[], inputData: unknown) {
+  const stableInputKey = stabilizeMutationKeys(inputKeyMeta);
+
+  const keyMaps = [initialDownloadKeys, customerKeys];
+
+  for (const keyMap of keyMaps) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    for (const [__key, _dataFn] of Object.entries(keyMap)) {
+      const dataFn = _dataFn as KeyWithMetaFn<unknown, unknown>;
+      /**
+       * We're utilizing the lazy execution of object properties to run the `dataFn` without actually passing it valid props
+       * This will need to be refactored if the KeyWithMetaFn ever throws an error on invalid data input.
+       */
+      const keyWithMeta = dataFn();
+      const unstablePotentialMatchedKey = keyWithMeta.transformDataToKey?.(inputData);
+      if (!unstablePotentialMatchedKey) {
+        continue;
+      }
+      const stablePotentialMatchedKey = stabilizeMutationKeys(unstablePotentialMatchedKey)
+      if (stablePotentialMatchedKey === stableInputKey) return keyWithMeta;
+    }
+  }
+  return undefined;
+}
 
 export const setQueryData = <T extends KeyWithMeta<unknown, unknown>>(
   queryClient: QueryClient,

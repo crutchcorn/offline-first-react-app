@@ -2,7 +2,7 @@ import {useMutationState} from "../hooks/useMutationState";
 import {useMemo} from "react";
 import {mutationHasConflicts} from "../utils/mutations-utils.ts";
 import type {Mutation} from "@tanstack/query-core";
-import type {customerKeys, GetKeyContext, GetKeyData} from "../constants/query-keys.ts";
+import {type customerKeys, type GetKeyContext, type GetKeyData, getKeyRecordFromKey} from "../constants/query-keys.ts";
 import {stringify} from "superjson";
 
 /**
@@ -44,7 +44,7 @@ export const Sync = () => {
         <ul>
           {sortedMutations.map((mutation, i) => {
             return <li key={mutation.mutationId}>
-              <PersonListDetails mutation={mutation} index={i}/>
+              <MutationSwitchCase mutation={mutation} index={i}/>
               <button onClick={() => void mutation.continue()}>View details</button>
             </li>
           })}
@@ -52,6 +52,21 @@ export const Sync = () => {
     </div>
     }
   </div>
+}
+
+interface MutationSwitchCaseProps {
+  mutation: Mutation<unknown, Error, unknown, unknown>
+  index: number
+}
+
+function MutationSwitchCase({mutation, index}: MutationSwitchCaseProps) {
+  const matchedKeyMeta = useMemo(() => getKeyRecordFromKey(mutation.options.mutationKey!, mutation.state.variables), [mutation]);
+  switch (matchedKeyMeta?.type) {
+    case "person":
+      return <PersonListDetails mutation={mutation} index={index}/>
+    default:
+      return null;
+  }
 }
 
 interface PersonListDetailsProps {

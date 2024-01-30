@@ -1,16 +1,20 @@
 import type {PersonDetailsInfo, PersonListInfo} from "../types/api";
 import type {QueryClient} from "@tanstack/react-query";
 
-interface KeyWithMeta<TData, TContext, TMeta> {
+interface KeyWithMeta<TData, TContext> {
+  // The unique key for a query and/or mutation
   key: readonly unknown[];
+  // The return type of a query's `queryFn` function
   data?: TData;
-  meta?: TMeta;
+  // A unique enum for each type of data type
+  type: string;
+  // The return type of a mutation's `onMutation` function (TanStack Query context)
   context?: TContext;
 }
 
-type KeyWithMetaFn<TData, TContext, TMeta> = (...props: never[]) => KeyWithMeta<TData, TContext, TMeta>
+type KeyWithMetaFn<TData, TContext> = (...props: never[]) => KeyWithMeta<TData, TContext>
 
-type KeyRecord = Record<string, KeyWithMetaFn<unknown, unknown, unknown>>;
+type KeyRecord = Record<string, KeyWithMetaFn<unknown, unknown>>;
 
 // We can't use `satisfies` here because it doesn't play well with circular constant usage
 function expectKeyRecord<T extends KeyRecord>(props: T): T {
@@ -22,10 +26,12 @@ export const initialDownloadKeys = {
   all: () => ({
     key: ["initialDownload"] as const,
     data: undefined as never as void,
+    type: ""
   }),
   status: (status: string) => ({
     key: [...initialDownloadKeys.all().key, status] as const,
     data: undefined as never as boolean,
+    type: ""
   }),
 };
 
@@ -34,20 +40,24 @@ expectKeyRecord(initialDownloadKeys);
 export const customerKeys = {
   all: () => ({
     key: ["customers"] as const,
-    data: undefined as never as void
+    data: undefined as never as void,
+    type: "person"
   }),
   lists: () => ({
     key: [...customerKeys.all().key, "list"] as const,
-    data: undefined as never as PersonListInfo[]
+    data: undefined as never as PersonListInfo[],
+    type: "person"
   }),
   details: () => ({
     key: [...customerKeys.all().key, "detail"] as const,
     data: undefined as never as PersonDetailsInfo,
-    context: undefined as never as { status: "conflict" | "success", serverPersonData: PersonDetailsInfo }
+    context: undefined as never as { status: "conflict" | "success", serverPersonData: PersonDetailsInfo },
+    type: "person"
   }),
   detail: (id: string | number) => ({
     key: [...customerKeys.details().key, id] as const,
-    data: undefined as never as PersonDetailsInfo
+    data: undefined as never as PersonDetailsInfo,
+    type: "person"
   }),
 };
 
@@ -60,17 +70,17 @@ expectKeyRecord(customerKeys);
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type RecordReturnType<T extends (...args: any[]) => any, P extends keyof ReturnType<T>> = P extends keyof ReturnType<T> ? ReturnType<T>[P] : never;
 
-export type GetKeyData<T extends KeyWithMetaFn<unknown, unknown, unknown>> =
+export type GetKeyData<T extends KeyWithMetaFn<unknown, unknown>> =
   RecordReturnType<T, "data">;
 
-export type GetKeyContext<T extends KeyWithMetaFn<unknown, unknown, unknown>> =
+export type GetKeyContext<T extends KeyWithMetaFn<unknown, unknown>> =
   RecordReturnType<T, "context">;
 
 export type CustomerContexts = {
   [K in keyof typeof customerKeys]: GetKeyContext<typeof customerKeys[K]>;
 }[keyof typeof customerKeys];
 
-export const setQueryData = <T extends KeyWithMeta<unknown, unknown, unknown>>(
+export const setQueryData = <T extends KeyWithMeta<unknown, unknown>>(
   queryClient: QueryClient,
   keyWithMeta: T,
   data: T['data']
@@ -78,7 +88,7 @@ export const setQueryData = <T extends KeyWithMeta<unknown, unknown, unknown>>(
   queryClient.setQueryData(keyWithMeta.key, data);
 }
 
-export const getQueryData = <T extends KeyWithMeta<unknown, unknown, unknown>>(
+export const getQueryData = <T extends KeyWithMeta<unknown, unknown>>(
   queryClient: QueryClient,
   keyWithMeta: T
 ): T['data'] => {

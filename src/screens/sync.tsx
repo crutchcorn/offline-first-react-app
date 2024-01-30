@@ -1,6 +1,9 @@
 import {useMutationState} from "../hooks/useMutationState";
 import {useMemo} from "react";
 import {mutationHasConflicts} from "../utils/mutations-utils.ts";
+import type {Mutation} from "@tanstack/query-core";
+import type {customerKeys, GetKeyContext, GetKeyData} from "../constants/query-keys.ts";
+import {stringify} from "superjson";
 
 /**
  * Show all mutations, error, success, and pending (up to 24 hours ago)
@@ -34,24 +37,74 @@ export const Sync = () => {
   }, [allMutations])
 
   return <div>
-    <h1>Sync</h1>
+    <h1>Client {"<->"} Server Sync</h1>
     {sortedMutations.length === 0 && <p>No recent queries</p>}
     {sortedMutations.length !== 0 && <div>
         <h2>{sortedMutations.length} items</h2>
         <ul>
-          {sortedMutations.map(mutation => {
-            const hasConflict = mutationHasConflicts(mutation.state);
+          {sortedMutations.map((mutation, i) => {
             return <li key={mutation.mutationId}>
-              <p>Type: <span style={hasConflict ? {
-                color: "white",
-                background: 'red'
-              } : {}}>{hasConflict ? "CONFLICT" : "Mutation"}</span></p>
-              <p>{JSON.stringify(mutation)}</p>
-              <button onClick={() => mutation.continue()}>Resume</button>
+              <PersonListDetails mutation={mutation} index={i}/>
+              <button onClick={() => void mutation.continue()}>View details</button>
             </li>
           })}
         </ul>
     </div>
     }
   </div>
+}
+
+interface PersonListDetailsProps {
+  index: number;
+  mutation: Mutation<unknown, Error, unknown, unknown>
+}
+
+function PersonListDetails({mutation: _mutation, index: i}: PersonListDetailsProps) {
+  const mutation = _mutation as never as Mutation<GetKeyData<typeof customerKeys.details>, Error, GetKeyData<typeof customerKeys.details>, GetKeyContext<typeof customerKeys.details>>;
+  const hasConflict = useMemo(() => mutationHasConflicts(mutation.state), [mutation]);
+
+  const statusEl = useMemo(() => {
+    const pendingOrIdle = <span
+      style={{paddingRight: '1rem', paddingLeft: '1rem', background: "lightyellow", color: "black"}}>Pending</span>;
+
+    if (hasConflict) {
+      return <span style={{
+        paddingRight: '1rem',
+        paddingLeft: '1rem',
+        background: "darkred",
+        color: "white"
+      }}>Conflicting with the server</span>
+    }
+
+    if (mutation.state.isPaused) {
+      return pendingOrIdle;
+    }
+
+    switch (mutation.state.status) {
+      case "error":
+        return <span style={{
+          paddingRight: '1rem',
+          paddingLeft: '1rem',
+          background: "darkred",
+          color: "white"
+        }}>Error: {stringify(mutation.state.error)}</span>
+      case "success":
+        return <span
+          style={{paddingRight: '1rem', paddingLeft: '1rem', background: "darkgreen", color: 'white'}}>Success</span>
+      case "idle":
+      case "pending":
+      default:
+        return pendingOrIdle;
+    }
+  }, [mutation, hasConflict])
+
+  return (
+    <>
+      <p>Item {i}</p>
+      <p>Type: Person</p>
+      <p>Status: {statusEl}</p>
+      <p>Name: {mutation.state.variables?.name}</p>
+      <p>Age: {mutation.state.variables?.age}</p>
+    </>
+  )
 }

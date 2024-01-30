@@ -22,7 +22,7 @@ export const IndividialDiffHandler = ({ person, close }: IndividualDiffHandler) 
 		staleTime: 0,
 	});
 
-	const { updatePerson } = useUpdatePerson(person.id);
+	const { mutate: updatePerson } = useUpdatePerson(person.id);
 
 	if (isLoading) {
 		return (
@@ -35,7 +35,7 @@ export const IndividialDiffHandler = ({ person, close }: IndividualDiffHandler) 
 	return (
 			<Form
 				onSubmit={(values: Omit<PersonDetailsInfo, "lastUpdated" | "id">) => {
-					updatePerson.mutate(
+					updatePerson(
 						{
 							...values,
 							id: person.id,

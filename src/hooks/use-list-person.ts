@@ -36,6 +36,7 @@ export const useListPerson = () => {
 			const lastUpdatedStr = localStorage.getItem(LAST_UPDATED_KEY);
 			const lastUpdated = lastUpdatedStr ? new Date(lastUpdatedStr) : null;
 
+			// Returns only the new data
 			const newList = await getPeopleDatabaseList({ lastUpdated, signal });
 
 			for (const person of newList) {

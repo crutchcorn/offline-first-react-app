@@ -13,7 +13,7 @@ interface Person {
 
 export const GET: APIRoute = () => {
 	const list = parse<Person[]>(fs.readFileSync(listPath, "utf8"));
-	for (let i = 0; i < list.length; i++) {
+	for (let i = 0; i < 10; i++) {
 		list[i]!.lastUpdated = new Date();
 	}
 

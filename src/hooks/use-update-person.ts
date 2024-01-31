@@ -12,6 +12,7 @@ export const useUpdatePerson = (id: string) => {
 	const queryClient = useQueryClient();
 	return useMutation({
 		mutationKey: customerKeys.detail(id).key,
+		// TODO: Move this into detaultMutation?
 		// eslint-disable-next-line @typescript-eslint/require-await
 		onMutate: async (person: PersonDetailsInfo) => {
 			clearPreviousMutations({

@@ -10,6 +10,7 @@ import {
 	initialDownloadKeys,
 } from "../constants/query-keys";
 import { stringify } from "superjson";
+import { useNavigate } from "react-router-dom";
 
 /**
  * Show all mutations, error, success, and pending (up to 24 hours ago)
@@ -22,6 +23,8 @@ import { stringify } from "superjson";
  * Errored mutations should show the error code and message
  */
 export const Sync = () => {
+	const navigate = useNavigate();
+
 	const allMutations = useMutationState({
 		select: (m) => m,
 		filters: {
@@ -60,7 +63,11 @@ export const Sync = () => {
 							return (
 								<li key={mutation.mutationId}>
 									<MutationSwitchCase mutation={mutation} index={i} />
-									<button onClick={() => void mutation.continue()}>
+									<button
+										onClick={() =>
+											navigate(`/sync-details/${mutation.mutationId}`)
+										}
+									>
 										View details
 									</button>
 								</li>
@@ -189,7 +196,6 @@ function PersonListDetails({
 			<p>Status: {statusEl}</p>
 			<p>Name: {mutation.state.variables?.name}</p>
 			<p>Age: {mutation.state.variables?.age}</p>
-			<pre>{stringify(mutation)}</pre>
 		</>
 	);
 }

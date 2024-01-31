@@ -1,17 +1,26 @@
 import { Field, Form } from "houseform";
 import { useQuery } from "@tanstack/react-query";
 import { getPerson } from "../services/person";
-import { Dialog } from "../components/dialog/dialog";
 import { useUpdatePerson } from "../hooks/use-update-person";
 import type { PersonDetailsInfo } from "../types/api";
+import { useNavigate, useParams } from "react-router-dom";
+import { useMutationState } from "../hooks/useMutationState.ts";
+import {
+	type customerKeys,
+	type GetKeyContext,
+	type GetKeyData,
+	getKeyRecordFromKey,
+} from "../constants/query-keys.ts";
+import { useMemo } from "react";
+import type { Mutation } from "@tanstack/query-core";
+import { mutationHasConflicts } from "../utils/mutations-utils.ts";
 
-interface DiffHandlerProps {
+interface ConflictEditProps {
 	person: PersonDetailsInfo;
 }
 
-export const DiffHandler = ({
-	person,
-}: DiffHandlerProps) => {
+const PersonConflictEdit = ({ person }: ConflictEditProps) => {
+	const navigate = useNavigate();
 	const { isLoading, data: serverPerson } = useQuery({
 		queryKey: ["serverperson", person.id],
 		queryFn: ({ signal }) => {
@@ -25,11 +34,7 @@ export const DiffHandler = ({
 	const { mutate: updatePerson } = useUpdatePerson(person.id);
 
 	if (isLoading) {
-		return (
-			<Dialog>
-				<p>Loading...</p>
-			</Dialog>
-		);
+		return <p>Loading...</p>;
 	}
 
 	return (
@@ -43,7 +48,7 @@ export const DiffHandler = ({
 					},
 					{
 						onSuccess: () => {
-							close();
+							navigate(-1);
 						},
 					},
 				);
@@ -114,6 +119,63 @@ export const DiffHandler = ({
 	);
 };
 
-export const SyncDetails = () => {
-
+interface PersonSyncDetailsProps {
+	mutation: Mutation<unknown, Error, unknown, unknown>;
 }
+
+const PersonSyncDetails = ({ mutation: _mutation }: PersonSyncDetailsProps) => {
+	const mutation = _mutation as never as Mutation<
+		GetKeyData<typeof customerKeys.details>,
+		Error,
+		GetKeyData<typeof customerKeys.details>,
+		GetKeyContext<typeof customerKeys.details>
+	>;
+
+	const hasConflict = useMemo(
+		() => mutationHasConflicts(mutation.state),
+		[mutation],
+	);
+
+	if (hasConflict) {
+		return <PersonConflictEdit person={mutation.state.variables!} />;
+	}
+
+	return (
+		<>
+			<p>Type: Person</p>
+			<p>Name: {mutation.state.variables?.name}</p>
+			<p>Age: {mutation.state.variables?.age}</p>
+		</>
+	);
+};
+
+export const SyncDetails = () => {
+	const { id } = useParams();
+
+	const mutation = useMutationState({
+		select: (m) => m,
+		filters: {
+			predicate: (mutation) => mutation.mutationId === Number(id),
+		},
+	})[0];
+
+	const matchedKeyMeta = useMemo(
+		() =>
+			mutation
+				? getKeyRecordFromKey(
+						mutation.options.mutationKey!,
+						mutation.state.variables,
+					)
+				: undefined,
+		[mutation],
+	);
+
+	if (!mutation) return <p>404 sync detail not found</p>;
+
+	switch (matchedKeyMeta?.type) {
+		case "person":
+			return <PersonSyncDetails mutation={mutation} />;
+		default:
+			return null;
+	}
+};

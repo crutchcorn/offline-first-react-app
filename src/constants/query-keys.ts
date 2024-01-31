@@ -118,8 +118,8 @@ expectKeyRecord(customerKeys);
  * Using `ReturnType<T>[K] doesn't work because it doesn't handle the case where K is not a key of ReturnType<T>.
  * When that happens, it will return `any` instead of `never`.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type RecordReturnType<
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	T extends (...args: any[]) => any,
 	P extends keyof ReturnType<T>,
 > = P extends keyof ReturnType<T> ? ReturnType<T>[P] : never;
